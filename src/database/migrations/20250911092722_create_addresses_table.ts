@@ -17,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
     }).then(() => {
         return knex.raw(`
             CREATE UNIQUE INDEX addressess_user_default_unique
-            ON addressess(user_id)
+            ON addresses(user_id)
             WHERE is_default= true
             `)
     })
@@ -25,5 +25,5 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
+    return knex.schema.dropTableIfExists("addresses")
 }
-

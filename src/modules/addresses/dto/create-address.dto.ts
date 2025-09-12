@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateAddressDto {
     @ApiProperty({ example: "Home" })
@@ -10,12 +10,13 @@ export class CreateAddressDto {
     @ApiProperty({ example: "123 street road" })
     @IsString()
     @IsNotEmpty()
-    addressLine1: string
+    street_address: string
 
-    @ApiPropertyOptional({ example: "Near Uyo" })
+    @ApiProperty({ example: "12B" })
     @IsString()
-    @IsOptional()
-    addressLine2?: string
+    @IsNotEmpty()
+    apartment_unit: string
+
 
     @ApiProperty({ example: "Uyo" })
     @IsString()
@@ -36,6 +37,10 @@ export class CreateAddressDto {
     @ApiProperty({ example: "M20 4UR" })
     @IsString()
     @IsNotEmpty()
-    postalCode: string
+    postal_code: string
+
+    @ApiProperty({ example: true })
+    @IsBoolean()
+    is_default: boolean
 
 }

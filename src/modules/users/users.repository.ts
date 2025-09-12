@@ -21,7 +21,7 @@ export class UserRepository implements IUserRepository {
 
     constructor(@InjectConnection() private readonly knex: Knex) { }
 
-    async create(userData: Omit<CreateUserDTO, "addresses">, trx: Knex.Transaction): Promise<IUser | null> {
+    async create(userData: CreateUserDTO, trx: Knex.Transaction): Promise<IUser | null> {
         const [user] = await trx("users").insert(userData).returning("*")
         return user
 

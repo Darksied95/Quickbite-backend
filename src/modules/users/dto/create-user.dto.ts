@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Transform, Type } from "class-transformer";
-import { IsEmail, IsPhoneNumber, IsString, MinLength, ValidateNested } from "class-validator";
-import { CreateAddressDto } from "src/modules/addresses/dto/create-address.dto";
+import { Transform } from "class-transformer";
+import { IsEmail, IsPhoneNumber, IsString, MinLength, } from "class-validator";
 
 export class CreateUserDTO {
     @ApiProperty({ example: "email@quickbite.com" })
@@ -15,7 +14,7 @@ export class CreateUserDTO {
     password: string
 
     @ApiProperty({ example: "+2347012345678" })
-    @IsPhoneNumber("NG")
+    @IsPhoneNumber("NG", { message: "Invalid phone number" })
     phone: string
 
     @ApiProperty({ example: "Rajah" })
@@ -27,9 +26,4 @@ export class CreateUserDTO {
     @IsString()
     @MinLength(3)
     last_name: string
-
-    @ApiProperty()
-    @ValidateNested()
-    @Type(() => CreateAddressDto)
-    addresses: CreateAddressDto[]
 }

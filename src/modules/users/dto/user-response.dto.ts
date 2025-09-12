@@ -1,4 +1,4 @@
-import { Expose } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 import { CreateUserDTO } from "./create-user.dto";
 
 export class UserResponseDto implements Omit<CreateUserDTO, "password" | "addresses"> {
@@ -18,8 +18,8 @@ export class UserResponseDto implements Omit<CreateUserDTO, "password" | "addres
     phone: string;
 
     @Expose()
-    created_at: string
+    created_at: Date
 
     @Expose()
-    updated_at: string
+    updated_at: Date
 }

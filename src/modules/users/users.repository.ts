@@ -1,26 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { IUser } from './users.type';
+import { IUser, IUserRole } from './users.type';
 import { InjectConnection } from 'nest-knexjs';
 import { Knex } from 'knex';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 interface IUserRepository {
-  create(userData: CreateUserDTO, trx: Knex.Transaction): Promise<IUser | null>;
+  create(userData: CreateUserDTO & { role: IUserRole }, trx: Knex.Transaction): Promise<IUser | null>;
   findById(id: string): Promise<IUser | null>;
   findByEmail(email: string): Promise<IUser | null>;
   update(id: string, userData: UpdateUserDto): Promise<IUser | null>;
   updatePassword(id: string, passwordHash: string): Promise<void>;
   softDelete(id: string): Promise<void>;
-  findByUserType(userType: IUser['user_type']): Promise<void>;
+  findByUserType(userType: IUser['role']): Promise<void>;
 }
 
 @Injectable()
 export class UserRepository implements IUserRepository {
-  constructor(@InjectConnection() private readonly knex: Knex) {}
+  constructor(@InjectConnection() private readonly knex: Knex) { }
 
   async create(
-    userData: CreateUserDTO,
+    userData: CreateUserDTO & { role: IUserRole },
     trx: Knex.Transaction,
   ): Promise<IUser | null> {
     const [user] = await trx('users').insert(userData).returning('*');
@@ -53,8 +53,8 @@ export class UserRepository implements IUserRepository {
     return;
   }
 
-  async findByUserType(userType: IUser['user_type']): Promise<void> {
-    await this.knex<IUser>('users').where({ user_type: userType });
+  async findByUserType(userType: IUser['role']): Promise<void> {
+    await this.knex<IUser>('users').where({ role: userType });
     return;
   }
 

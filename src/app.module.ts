@@ -7,6 +7,7 @@ import { RestaurantsModule } from './modules/restaurants/restaurants.module';
 import { UserModule } from './modules/users/users.module';
 import { DatabaseModule } from './database/knex.module';
 import { ConfigModule } from '@nestjs/config';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -18,8 +19,9 @@ import { ConfigModule } from '@nestjs/config';
     CustomersModule,
     RestaurantsModule,
     UserModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,0 +1,1 @@
+export const USER_ROLES = ['driver', 'customer', 'restaurant_owner', 'admin'] as const

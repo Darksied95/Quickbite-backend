@@ -9,12 +9,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { TokenService } from './token/token.service';
 import { TokenRepository } from './token/token.repository';
 import { ConfigService } from '@nestjs/config';
+import { AdminModule } from '../admin/admin.module';
 
 @Module({
   imports: [
     UserModule,
     AddressModule,
     CustomersModule,
+    AdminModule,
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],

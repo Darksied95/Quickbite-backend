@@ -12,6 +12,8 @@ import { UserNotFoundException } from 'src/exceptions/user-not-found.exception';
 import { TokenService } from './token/token.service';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from '../users/dto/user-response.dto';
+import { CreateAdminDto } from '../admin/dto/create-admin.dto';
+import { AdminService } from '../admin/admin.service';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +24,8 @@ export class AuthService {
     private readonly addressService: AddressService,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private readonly adminService: AdminService
   ) { }
 
   async createCustomer(customerData: CreateCustomerDto) {
@@ -32,30 +35,35 @@ export class AuthService {
       last_name: customerData.last_name,
       password: await this.hashingService.hash(customerData.password),
       phone: customerData.phone,
-      user_type: 'customer',
     };
 
     return this.knex.transaction(async (trx) => {
-      const user = await this.userService.create(userDetails, trx);
+      const user = await this.userService.create(userDetails, "customer", trx);
 
-      const addresses = await this.addressService.create(
+      await this.addressService.create(
         customerData.addresses,
         user.id,
         trx,
       );
-      const customer = await this.customerService.create(
+      await this.customerService.create(
         { user_id: user.id },
         trx,
       );
 
-      const { password, ...userWithoutPassword } = user;
-      return {
-        user: userWithoutPassword,
-        addresses,
-        total_orders: customer.total_orders,
-        total_spent: customer.total_spent,
-      };
+      return null
     });
+  }
+
+  async createAdmin(adminDetails: CreateAdminDto) {
+    const { addresses: adminAddresses, ...userDetails } = adminDetails
+    return this.knex.transaction(async (trx) => {
+      const user = await this.userService.create(userDetails, "admin", trx)
+      await this.addressService.create(adminAddresses, user.id, trx)
+      await this.adminService.create(user.id, trx)
+
+      return null
+    })
+
   }
 
   async login(loginDetails: LoginRequestDTO) {
@@ -77,7 +85,7 @@ export class AuthService {
 
     if (!isvalidPassword) throw new UnauthorizedException("Invalid Credentials")
 
-    const payload = { userid: user.id, email: user.email, type: user.user_type }
+    const payload = { userid: user.id, email: user.email, type: user.role }
 
     const { refreshToken } = await this.tokenService.createRefreshToken(user.id)
 

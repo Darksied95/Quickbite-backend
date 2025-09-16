@@ -1,9 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateCustomerDto } from '../customers/dto/create-customers.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CustomerResponseDto } from '../customers/dto/customer-response.dto';
 import { LoginRequestDTO, LoginResponseDTO } from './dto/login.dto';
+import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 
 
 
@@ -19,12 +19,20 @@ export class AuthController {
   }
 
   @Post('register/customer')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Register a new customer' })
   @ApiResponse({ status: 201, description: 'Customer successfully registered' })
+
   async registerCustomer(
     @Body() req: CreateCustomerDto,
-  ): Promise<CustomerResponseDto> {
+  ) {
     return await this.authService.createCustomer(req);
+  }
+
+  @Post("register/admin")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async createAdmin(@Body() req: CreateAdminDto) {
+    return await this.authService.createAdmin(req)
   }
 
   @Post('register/driver')

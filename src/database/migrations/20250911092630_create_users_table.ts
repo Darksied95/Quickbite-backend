@@ -1,4 +1,5 @@
 import type { Knex } from 'knex';
+import { USER_ROLES } from '../../modules/users/user.constant';
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('users', function (table) {
@@ -8,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('last_name', 255).notNullable();
     table.string('password', 255).notNullable();
     table.string('phone', 20).notNullable();
-    table.enum('user_type', ['driver', 'customer', 'restaurant']).notNullable();
+    table.enum('role', USER_ROLES).notNullable();
     table.timestamps(true, true);
   });
 }

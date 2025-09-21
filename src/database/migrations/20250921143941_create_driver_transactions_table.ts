@@ -1,0 +1,22 @@
+import type { Knex } from "knex";
+
+
+export async function up(knex: Knex): Promise<void> {
+    return knex.schema.createTable("driver_transactions", (table) => {
+        table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"))
+        table.uuid("driver_id").notNullable().references("id").inTable("driver_profiles").onDelete('CASCADE').onUpdate('CASCADE');
+        table.string("order_id").notNullable().unique();
+        table.string("payment_method").notNullable();
+        table.enum("status", ["pending", "completed", "failed"]).notNullable().defaultTo("pending");
+        table.decimal("amount").notNullable();
+        table.timestamps(true, true);
+
+        table.index("driver_id");
+    });
+}
+
+
+export async function down(knex: Knex): Promise<void> {
+    return knex.schema.dropTable("driver_transactions");
+}
+

@@ -8,3 +8,10 @@ export const ORDER_STATUS = [
     'ready_for_pickup',
     'in_transit',
 ] as const;
+
+export const DELIVERY_STATUS = [
+    'driver_assigned',
+    'picked_up',
+    'delivery_attempted',
+    'delivered',
+]

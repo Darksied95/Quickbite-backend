@@ -11,15 +11,18 @@ export async function up(knex: Knex): Promise<void> {
         .inTable('users')
         .onDelete('CASCADE')
         .onUpdate('CASCADE');
-      table.string('label').notNullable();
       table.string('street_address').notNullable();
       table.string('apartment_unit');
       table.string('city').notNullable();
       table.string('state').notNullable();
       table.string('postal_code').notNullable();
       table.string('country').notNullable();
-      table.boolean('is_default').notNullable().defaultTo(false);
+      table.decimal("latitude", 10, 8).notNullable();
+      table.decimal("longitude", 11, 8).notNullable();
       table.timestamps(true, true);
+
+      table.index("user_id");
+      table.index(["latitude, longitude"]);
     })
     .then(() => {
       return knex.raw(`

@@ -1,6 +1,5 @@
 import type { Knex } from "knex";
 import { ORDER_STATUS } from "src/modules/orders/order.constant";
-import { USER_STATUS } from "src/modules/users/user.constant";
 
 
 export async function up(knex: Knex): Promise<void> {
@@ -24,5 +23,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
+    return knex.schema.dropTable("orders");
 }
 

@@ -1,6 +1,6 @@
 import type { Knex } from "knex";
 import { USER_STATUS } from "../../modules/users/user.constant";
-import { TableNames } from "../../common/constants/tableNames";
+import { TableNames } from "../tables/table.constant";
 
 
 export async function up(knex: Knex): Promise<void> {

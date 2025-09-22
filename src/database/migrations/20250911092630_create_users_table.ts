@@ -1,8 +1,9 @@
 import type { Knex } from 'knex';
 import { USER_ROLES, USER_STATUS } from '../../modules/users/user.constant';
+import { TableNames } from '../../common/constants/tableNames';
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable('users', function (table) {
+  return knex.schema.createTable(TableNames.Users, function (table) {
     table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
     table.string('email', 255).unique().notNullable();
     table.string('first_name', 255).notNullable();
@@ -19,5 +20,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable('users');
+  return knex.schema.dropTable(TableNames.Users);
 }

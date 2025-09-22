@@ -1,12 +1,13 @@
 import type { Knex } from "knex";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable('menu_items', function (table) {
+    return knex.schema.createTable(TableNames.MenuItems, function (table) {
         table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
         table.string('name').notNullable();
-        table.uuid('category_id').notNullable().references('id').inTable('menu_categories').onDelete('CASCADE').onUpdate('CASCADE');
-        table.uuid('restaurant_id').notNullable().references('id').inTable('restaurant_profiles').onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid('category_id').notNullable().references('id').inTable(TableNames.MenuCategories).onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid('restaurant_id').notNullable().references('id').inTable(TableNames.RestaurantProfiles).onDelete('CASCADE').onUpdate('CASCADE');
         table.text('description');
         table.decimal('price').notNullable();
         table.boolean('is_available').notNullable().defaultTo(true);
@@ -20,6 +21,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTableIfExists('menu_items');
+    return knex.schema.dropTableIfExists(TableNames.MenuItems);
 }
 

@@ -1,12 +1,13 @@
 import type { Knex } from "knex";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable("reviews", (table) => {
+    return knex.schema.createTable(TableNames.Reviews, (table) => {
         table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"))
-        table.uuid("restaurant_id").notNullable().references("id").inTable("restaurant_profiles").onDelete('CASCADE').onUpdate('CASCADE');
-        table.uuid("customer_id").notNullable().references("id").inTable("users").onDelete('CASCADE').onUpdate('CASCADE');
-        table.uuid("order_id").notNullable().references("id").inTable("orders").onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("restaurant_id").notNullable().references("id").inTable(TableNames.RestaurantProfiles).onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("customer_id").notNullable().references("id").inTable(TableNames.Users).onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("order_id").notNullable().references("id").inTable(TableNames.Orders).onDelete('CASCADE').onUpdate('CASCADE');
         table.tinyint("restaurant_rating").notNullable();
         table.tinyint("driver_rating").notNullable();
         table.text("comment");
@@ -23,6 +24,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable("reviews");
+    return knex.schema.dropTable(TableNames.Reviews);
 }
 

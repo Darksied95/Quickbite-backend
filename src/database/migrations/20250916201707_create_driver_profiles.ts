@@ -1,11 +1,12 @@
 import type { Knex } from "knex";
-import { USER_STATUS } from "src/modules/users/user.constant";
+import { USER_STATUS } from "../../modules/users/user.constant";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable("driver_profiles", (table) => {
+    return knex.schema.createTable(TableNames.DriverProfiles, (table) => {
         table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"))
-        table.uuid("user_id").notNullable().references("id").inTable("users").unique();
+        table.uuid("user_id").notNullable().references("id").inTable(TableNames.Users).unique();
         table.enum("vehicle_type", ["car", "motorbike", "bicycle"]).notNullable();
         table.integer("total_rides").notNullable().defaultTo(0);
         table.enum("status", USER_STATUS).notNullable().defaultTo("active");
@@ -20,6 +21,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable("driver_profiles");
+    return knex.schema.dropTable(TableNames.DriverProfiles);
 }
 

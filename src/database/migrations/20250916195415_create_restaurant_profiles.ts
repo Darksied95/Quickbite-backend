@@ -1,12 +1,13 @@
 import type { Knex } from "knex";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable("restaurant_profiles", (table) => {
+    return knex.schema.createTable(TableNames.RestaurantProfiles, (table) => {
         table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"))
         table.string("name").notNullable();
-        table.uuid("owner_id").notNullable().references("id").inTable("users");
-        table.uuid("address_id").notNullable().references("id").inTable("addresses");
+        table.uuid("owner_id").notNullable().references("id").inTable(TableNames.Users);
+        table.uuid("address_id").notNullable().references("id").inTable(TableNames.Addresses);
         table.string("phone")
         table.string("email")
         table.text("description")
@@ -23,6 +24,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable("restaurant_profiles");
+    return knex.schema.dropTable(TableNames.RestaurantProfiles);
 }
 

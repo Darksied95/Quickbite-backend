@@ -1,10 +1,11 @@
 import type { Knex } from "knex";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable("driver_locations", (table) => {
+    return knex.schema.createTable(TableNames.DriverLocations, (table) => {
         table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"))
-        table.uuid("driver_id").notNullable().references("id").inTable("driver_profiles").onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("driver_id").notNullable().references("id").inTable(TableNames.DriverProfiles).onDelete('CASCADE').onUpdate('CASCADE');
         table.decimal("latitude", 10, 8).notNullable();
         table.decimal("longitude", 11, 8).notNullable();
         table.timestamps(true, true);
@@ -15,6 +16,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable("driver_locations");
+    return knex.schema.dropTable(TableNames.DriverLocations);
 }
 

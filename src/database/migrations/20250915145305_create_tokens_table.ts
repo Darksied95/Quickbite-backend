@@ -1,15 +1,16 @@
 import type { Knex } from "knex";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable('tokens', function (table) {
+    return knex.schema.createTable(TableNames.Tokens, function (table) {
         table.uuid("id").primary().defaultTo(knex.raw('gen_random_uuid()'));
         table.string("token").unique().notNullable()
         table
             .uuid("user_id")
             .notNullable()
             .references("id")
-            .inTable("users")
+            .inTable(TableNames.Users)
             .onDelete('CASCADE')
             .onUpdate('CASCADE');
         table.boolean("is_revoked").defaultTo(false)
@@ -20,6 +21,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable('tokens')
+    return knex.schema.dropTable(TableNames.Tokens)
 }
 

@@ -1,11 +1,12 @@
 import type { Knex } from "knex";
-import { DELIVERY_STATUS } from "src/modules/orders/order.constant";
+import { DELIVERY_STATUS } from "../../modules/orders/order.constant";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable("delivery_tracking", (table) => {
+    return knex.schema.createTable(TableNames.DeliveryTracking, (table) => {
         table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"))
-        table.uuid("order_id").notNullable().references("id").inTable("orders")
+        table.uuid("order_id").notNullable().references("id").inTable(TableNames.Orders)
         table.string("delivery_status").notNullable();
         table.decimal("longitude").notNullable();
         table.decimal("latitude").notNullable();
@@ -18,6 +19,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable("delivery_tracking");
+    return knex.schema.dropTable(TableNames.DeliveryTracking);
 }
 

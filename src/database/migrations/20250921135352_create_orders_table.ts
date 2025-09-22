@@ -1,14 +1,15 @@
 import type { Knex } from "knex";
-import { ORDER_STATUS } from "src/modules/orders/order.constant";
+import { ORDER_STATUS } from "../../modules/orders/order.constant";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable("orders", (table) => {
+    return knex.schema.createTable(TableNames.Orders, (table) => {
         table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"))
-        table.uuid("restaurant_id").notNullable().references("id").inTable("restaurant_profiles").onDelete('CASCADE').onUpdate('CASCADE');
-        table.uuid("driver_id").notNullable().references("id").inTable("driver_profiles").onDelete('CASCADE').onUpdate('CASCADE');
-        table.uuid("customer_id").notNullable().references("id").inTable("users").onDelete('CASCADE').onUpdate('CASCADE');
-        table.uuid("customer_address_id").notNullable().references("id").inTable("addresses").onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("restaurant_id").notNullable().references("id").inTable(TableNames.RestaurantProfiles).onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("driver_id").notNullable().references("id").inTable(TableNames.DriverProfiles).onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("customer_id").notNullable().references("id").inTable(TableNames.Users).onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("customer_address_id").notNullable().references("id").inTable(TableNames.Addresses).onDelete('CASCADE').onUpdate('CASCADE');
         table.enum("status", ORDER_STATUS).notNullable().defaultTo("pending");
         table.string("order_number").notNullable(); //human readable order number
         table.decimal("total_cost").notNullable();
@@ -17,12 +18,12 @@ export async function up(knex: Knex): Promise<void> {
 
         table.index("restaurant_id");
         table.index("driver_id");
-        table.index("user_id");
+        table.index("customer_id");
     });
 }
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable("orders");
+    return knex.schema.dropTable(TableNames.Orders);
 }
 

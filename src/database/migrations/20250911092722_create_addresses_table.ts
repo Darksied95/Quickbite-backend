@@ -1,8 +1,9 @@
 import type { Knex } from 'knex';
+import { TableNames } from '../../common/constants/tableNames';
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema
-    .createTable('addresses', function (table) {
+    .createTable(TableNames.Addresses, function (table) {
       table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
       table.string('street_address').notNullable();
       table.string('apartment_unit');
@@ -14,18 +15,10 @@ export async function up(knex: Knex): Promise<void> {
       table.decimal("longitude", 11, 8).notNullable();
       table.timestamps(true, true);
 
-      table.index("user_id");
-      table.index(["latitude, longitude"]);
+      table.index(["latitude", "longitude"]);
     })
-    .then(() => {
-      return knex.raw(`
-            CREATE UNIQUE INDEX addressess_user_default_unique
-            ON addresses(user_id)
-            WHERE is_default= true
-            `);
-    });
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTableIfExists('addresses');
+  return knex.schema.dropTableIfExists(TableNames.Addresses);
 }

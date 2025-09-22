@@ -1,11 +1,12 @@
 import type { Knex } from "knex";
+import { TableNames } from "../../common/constants/tableNames";
 
 
 export async function up(knex: Knex): Promise<void> {
-    return knex.schema.createTable("inventories", (table) => {
+    return knex.schema.createTable(TableNames.Inventories, (table) => {
         table.uuid("id").primary().defaultTo(knex.raw("gen_random_uuid()"))
-        table.uuid("restaurant_id").notNullable().references("id").inTable("restaurant_profiles").onDelete('CASCADE').onUpdate('CASCADE');
-        table.uuid("item_id").notNullable().references("id").inTable("menu_items").onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("restaurant_id").notNullable().references("id").inTable(TableNames.RestaurantProfiles).onDelete('CASCADE').onUpdate('CASCADE');
+        table.uuid("item_id").notNullable().references("id").inTable(TableNames.MenuItems).onDelete('CASCADE').onUpdate('CASCADE');
         table.integer("quantity").notNullable();
         table.timestamps(true, true);
 
@@ -17,6 +18,6 @@ export async function up(knex: Knex): Promise<void> {
 
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.dropTable("inventories");
+    return knex.schema.dropTable(TableNames.Inventories);
 }
 

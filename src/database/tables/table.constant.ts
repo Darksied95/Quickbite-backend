@@ -6,7 +6,6 @@ export enum TableNames {
     AdminProfiles = 'admin_profiles',
     RestaurantProfiles = 'restaurant_profiles',
     DriverProfiles = 'driver_profiles',
-    UserAddresses = 'user_addresses',
     MenuCategories = 'menu_categories',
     MenuItems = 'menu_items',
     DriverLocations = 'driver_locations',

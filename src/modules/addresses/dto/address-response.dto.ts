@@ -34,4 +34,10 @@ export class AddressResponseDTO implements CreateAddressDto {
 
   @Expose()
   updated_at: string;
+
+  @Expose()
+  longitude: number;
+
+  @Expose()
+  latitude: number;
 }

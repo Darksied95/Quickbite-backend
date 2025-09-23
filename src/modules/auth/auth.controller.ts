@@ -23,9 +23,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Register a new customer' })
   @ApiResponse({ status: 201, description: 'Customer successfully registered' })
 
-  async registerCustomer(
-    @Body() req: CreateCustomerDto,
-  ) {
+  async registerCustomer(@Body() req: CreateCustomerDto) {
     return await this.authService.createCustomer(req);
   }
 

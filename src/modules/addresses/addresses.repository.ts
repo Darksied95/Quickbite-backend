@@ -1,10 +1,10 @@
 import { Knex } from 'knex';
 import { CreateAddressDto } from './dto/create-address.dto';
-import { IAddress } from './addresses.types';
+import { AddressTable } from 'src/database/tables/table.type';
 
 type Address = (CreateAddressDto & { user_id: string })[];
 interface IAddresses {
-  create(addresses: Address, Trx: Knex.Transaction): Promise<IAddress[] | null>;
+  create(addresses: Address, Trx: Knex.Transaction): Promise<AddressTable[] | null>;
 }
 
 export class AddressesRepository implements IAddresses {

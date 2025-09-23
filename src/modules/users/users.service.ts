@@ -9,7 +9,9 @@ import { InjectConnection } from 'nest-knexjs';
 import { UserRepository } from './users.repository';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UserNotFoundException } from 'src/exceptions/user-not-found.exception';
-import { IUserRole } from './users.type';
+import { USER_ROLES } from './user.constant';
+
+type IUserRole = typeof USER_ROLES[number];
 
 @Injectable()
 export class UserService {

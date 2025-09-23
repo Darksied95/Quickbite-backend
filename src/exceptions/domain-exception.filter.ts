@@ -13,8 +13,6 @@ export class DomainExceptionFilter implements ExceptionFilter {
         let statusCode = HttpStatus.NOT_FOUND
         let message = exception.message
 
-        console.log(request.url);
-
         if (request.url.includes("/auth/login")) {
             statusCode = HttpStatus.UNAUTHORIZED
             message = 'Invalid credentials.'

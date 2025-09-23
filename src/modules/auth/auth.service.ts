@@ -40,11 +40,7 @@ export class AuthService {
     return this.knex.transaction(async (trx) => {
       const user = await this.userService.create(userDetails, "customer", trx);
 
-      await this.addressService.create(
-        customerData.addresses,
-        user.id,
-        trx,
-      );
+      await this.addressService.create(customerData.addresses, user.id, trx);
       await this.customerService.create(
         { user_id: user.id },
         trx,

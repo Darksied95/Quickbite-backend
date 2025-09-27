@@ -7,10 +7,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserTable } from 'src/database/tables/table.type';
 
 
-type IUserRole = typeof USER_ROLES[number];
 
 interface IUserRepository {
-  create(userData: CreateUserDTO & { role: IUserRole }, trx: Knex.Transaction): Promise<UserTable | null>;
+  create(userData: CreateUserDTO & { role: USER_ROLES }, trx: Knex.Transaction): Promise<UserTable | null>;
   findById(id: string): Promise<UserTable | null>;
   findByEmail(email: string): Promise<UserTable | null>;
   update(id: string, userData: UpdateUserDto): Promise<UserTable | null>;
@@ -24,7 +23,7 @@ export class UserRepository implements IUserRepository {
   constructor(@InjectConnection() private readonly knex: Knex) { }
 
   async create(
-    userData: CreateUserDTO & { role: IUserRole },
+    userData: CreateUserDTO & { role: USER_ROLES },
     trx: Knex.Transaction,
   ): Promise<UserTable | null> {
     const [user] = await trx('users').insert(userData).returning('*');

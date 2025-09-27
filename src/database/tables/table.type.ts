@@ -44,8 +44,8 @@ export interface UserTable {
     last_name: string
     password: string
     phone: string
-    role: typeof USER_ROLES[number]
-    status: typeof USER_STATUS[number]
+    role: USER_ROLES
+    status: USER_STATUS
     created_at: Date
     updated_at: Date
 }

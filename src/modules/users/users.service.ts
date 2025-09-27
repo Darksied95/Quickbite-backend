@@ -11,7 +11,6 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { UserNotFoundException } from 'src/exceptions/user-not-found.exception';
 import { USER_ROLES } from './user.constant';
 
-type IUserRole = typeof USER_ROLES[number];
 
 @Injectable()
 export class UserService {
@@ -23,7 +22,7 @@ export class UserService {
 
   async create(
     userData: Omit<CreateUserDTO, 'addresses'>,
-    role: IUserRole,
+    role: USER_ROLES,
     trx: Knex.Transaction,
   ) {
     const existingUser = await this.userRepository.findByEmail(userData.email)

@@ -1,5 +1,5 @@
 import type { Knex } from "knex";
-import { USER_STATUS } from "../../modules/users/user.constant";
+import { USER_STATUS_VALUES } from "../../modules/users/user.constant";
 import { TableNames } from "../tables/table.constant";
 
 
@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
         table.uuid("user_id").notNullable().references("id").inTable(TableNames.Users).unique();
         table.enum("vehicle_type", ["car", "motorbike", "bicycle"]).notNullable();
         table.integer("total_rides").notNullable().defaultTo(0);
-        table.enum("status", USER_STATUS).notNullable().defaultTo("active");
+        table.enum("status", USER_STATUS_VALUES).notNullable().defaultTo("active");
         table.boolean("is_available").notNullable().defaultTo(false);
         table.timestamps(true, true);
 

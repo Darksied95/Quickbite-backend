@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { USER_ROLES, USER_STATUS } from '../../modules/users/user.constant';
+import { USER_ROLES_VALUES, USER_STATUS_VALUES } from '../../modules/users/user.constant';
 import { TableNames } from '../tables/table.constant';
 
 export async function up(knex: Knex): Promise<void> {
@@ -10,8 +10,8 @@ export async function up(knex: Knex): Promise<void> {
     table.string('last_name', 255).notNullable();
     table.string('password', 255).notNullable();
     table.string('phone', 20).notNullable();
-    table.enum('role', USER_ROLES).notNullable();
-    table.enum('status', USER_STATUS).notNullable().defaultTo('active');
+    table.enum('role', USER_ROLES_VALUES).notNullable();
+    table.enum('status', USER_STATUS_VALUES).notNullable().defaultTo('active');
     table.timestamps(true, true);
 
     table.index("email")

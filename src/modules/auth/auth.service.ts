@@ -14,6 +14,7 @@ import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from '../users/dto/user-response.dto';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { AdminService } from '../admin/admin.service';
+import { USER_ROLES } from '../users/user.constant';
 
 @Injectable()
 export class AuthService {
@@ -38,7 +39,7 @@ export class AuthService {
     };
 
     return this.knex.transaction(async (trx) => {
-      const user = await this.userService.create(userDetails, "customer", trx);
+      const user = await this.userService.create(userDetails, USER_ROLES.customer, trx);
 
       await this.addressService.create(customerData.addresses, user.id, trx);
       await this.customerService.create(
@@ -53,7 +54,7 @@ export class AuthService {
   async createAdmin(adminDetails: CreateAdminDto) {
     const { addresses: adminAddresses, ...userDetails } = adminDetails
     return this.knex.transaction(async (trx) => {
-      const user = await this.userService.create(userDetails, "admin", trx)
+      const user = await this.userService.create(userDetails, USER_ROLES.admin, trx)
       await this.addressService.create(adminAddresses, user.id, trx)
       await this.adminService.create(user.id, trx)
 

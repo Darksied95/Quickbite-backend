@@ -13,6 +13,7 @@ export async function up(knex: Knex): Promise<void> {
         table.text("description")
         table.string("logo_url");
         table.boolean("is_active").notNullable().defaultTo(true);
+        table.boolean("is_approved").notNullable().defaultTo(false);
         table.timestamps(true, true);
 
 

@@ -9,12 +9,13 @@ export class AddressService {
 
   async create(
     addresses: CreateAddressDto[],
-    user_id: string,
+    entity: { id: string, type: 'user' | 'restaurant' },
     trx: Knex.Transaction,
   ) {
     const addresseswithUserId = addresses.map((address) => ({
       ...address,
-      user_id,
+      entity_id: entity.id,
+      entity_type: entity.type,
     }));
 
     return await this.addressesRepository.create(addresseswithUserId, trx);

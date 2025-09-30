@@ -41,7 +41,7 @@ export class AuthService {
     return this.knex.transaction(async (trx) => {
       const user = await this.userService.create(userDetails, USER_ROLES.customer, trx);
 
-      await this.addressService.create(customerData.addresses, user.id, trx);
+      await this.addressService.create(customerData.addresses, { id: user.id, type: 'user' }, trx);
       await this.customerService.create(
         { user_id: user.id },
         trx,
@@ -51,11 +51,28 @@ export class AuthService {
     });
   }
 
+  async createRestaurantOwner(restaurantData: CreateCustomerDto) {
+    const userDetails = {
+      email: restaurantData.email,
+      first_name: restaurantData.first_name,
+      last_name: restaurantData.last_name,
+      password: await this.hashingService.hash(restaurantData.password),
+      phone: restaurantData.phone,
+    };
+
+    return this.knex.transaction(async (trx) => {
+      const user = await this.userService.create(userDetails, USER_ROLES.restaurant_owner, trx);
+      await this.addressService.create(restaurantData.addresses, { id: user.id, type: 'user' }, trx);
+
+      return null
+    });
+  }
+
   async createAdmin(adminDetails: CreateAdminDto) {
     const { addresses: adminAddresses, ...userDetails } = adminDetails
     return this.knex.transaction(async (trx) => {
       const user = await this.userService.create(userDetails, USER_ROLES.admin, trx)
-      await this.addressService.create(adminAddresses, user.id, trx)
+      await this.addressService.create(adminAddresses, { id: user.id, type: 'user' }, trx)
       await this.adminService.create(user.id, trx)
 
       return null

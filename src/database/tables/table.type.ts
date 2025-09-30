@@ -52,7 +52,8 @@ export interface UserTable {
 
 export interface AddressTable {
     id: string
-    user_id: string,
+    entity_id: string
+    entity_type: 'user' | 'restaurant'
     street_address: string
     apartment_unit: string
     city: string
@@ -63,7 +64,7 @@ export interface AddressTable {
     longitude: number
     is_default: boolean
     label: string
-    delivery_instructions: string
+    delivery_instructions?: string
     created_at: Date
     updated_at: Date
 }
@@ -88,10 +89,8 @@ export interface CustomerProfilesTable {
 
 export interface RestaurantProfileTable {
     id: string
-    user_id: string
     name: string
     owner_id: string
-    address_id: string
     phone: string
     email: string
     description: string

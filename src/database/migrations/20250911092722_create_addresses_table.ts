@@ -5,7 +5,8 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema
     .createTable(TableNames.Addresses, function (table) {
       table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
-      table.uuid('user_id').notNullable().references('id').inTable(TableNames.Users).onDelete('CASCADE').onUpdate('CASCADE');
+      table.uuid('entity_id').notNullable()
+      table.enum('entity_type', ['user', 'restaurant']).notNullable()
       table.string('street_address').notNullable();
       table.string('apartment_unit').notNullable();
       table.string('city').notNullable();
@@ -20,7 +21,7 @@ export async function up(knex: Knex): Promise<void> {
       table.timestamps(true, true);
 
       table.index(["latitude", "longitude"]);
-      table.index("user_id");
+      table.index(['entity_id', 'entity_type']);
     })
 }
 

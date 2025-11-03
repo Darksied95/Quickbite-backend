@@ -15,6 +15,7 @@ import { UserResponseDto } from '../users/dto/user-response.dto';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { AdminService } from '../admin/admin.service';
 import { USER_ROLES } from '../users/user.constant';
+import { JWTPayload } from './token/token.type';
 
 @Injectable()
 export class AuthService {
@@ -99,7 +100,7 @@ export class AuthService {
 
     if (!isvalidPassword) throw new UnauthorizedException("Invalid Credentials")
 
-    const payload = { userid: user.id, email: user.email, type: user.role }
+    const payload = { userId: user.id, email: user.email, role: user.role } satisfies JWTPayload
 
     const { refreshToken } = await this.tokenService.createRefreshToken(user.id)
 

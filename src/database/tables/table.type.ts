@@ -1,6 +1,7 @@
 import { USER_ROLES, USER_STATUS } from "src/modules/users/user.constant";
 import { TableNames } from "./table.constant";
 import { Knex } from "knex";
+import { Restaurant_APPROVAL_STATES } from "src/modules/restaurants/restaurant.constant";
 
 export type TypedKnex = Knex<DatabaseSchemaTypes>;
 
@@ -96,6 +97,7 @@ export interface RestaurantProfileTable {
     description: string
     logo_url: string
     is_active: boolean
+    status: Restaurant_APPROVAL_STATES
     created_at: Date
     updated_at: Date
 }

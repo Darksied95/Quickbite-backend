@@ -40,13 +40,14 @@ export class AuthController {
     return;
   }
 
-  @Post('register/restaurant')
+  @Post('register/restaurant_owner')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Register a new restaurant owner' })
   @ApiResponse({
     status: 201,
     description: 'Restaurant successfully registered',
   })
   registerRestauranOwner(@Body() req: CreateCustomerDto) {
-    return;
+    return this.authService.createRestaurantOwner(req)
   }
 }

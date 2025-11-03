@@ -1,5 +1,6 @@
 import type { Knex } from "knex";
 import { TableNames } from "../tables/table.constant";
+import { Restaurant_APPROVAL_STATES } from "../../modules/restaurants/restaurant.constant";
 
 
 export async function up(knex: Knex): Promise<void> {
@@ -12,11 +13,12 @@ export async function up(knex: Knex): Promise<void> {
         table.text("description")
         table.string("logo_url");
         table.boolean("is_active").notNullable().defaultTo(true);
-        table.boolean("is_approved").notNullable().defaultTo(false);
+        table.enum("status", Object.values(Restaurant_APPROVAL_STATES)).notNullable().defaultTo(Restaurant_APPROVAL_STATES.Pending);
         table.timestamps(true, true);
 
 
         table.index("owner_id");
+        table.index(["owner_id", "status"])
         table.index("is_active");
     });
 }

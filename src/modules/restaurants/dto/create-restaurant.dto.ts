@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsBoolean, IsEmail, IsPhoneNumber, IsString, IsUUID, ValidateNested } from "class-validator";
+import { IsEmail, IsObject, IsOptional, IsPhoneNumber, IsString, IsUUID, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "src/modules/addresses/dto/create-address.dto";
 
 export class CreateRestaurantDto {
@@ -7,11 +7,13 @@ export class CreateRestaurantDto {
     name: string
 
     @IsUUID()
-    owner_id: string
+    @IsOptional()
+    owner_id?: string
 
-    @ValidateNested({ each: true })
+    @IsObject()
+    @ValidateNested()
     @Type(() => CreateAddressDto)
-    addresses: CreateAddressDto
+    address: CreateAddressDto
 
     @IsPhoneNumber('NG')
     phone: string
@@ -21,8 +23,4 @@ export class CreateRestaurantDto {
 
     @IsString()
     description: string
-
-
-    @IsBoolean()
-    is_active: boolean
 }

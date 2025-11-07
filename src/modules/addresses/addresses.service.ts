@@ -12,12 +12,12 @@ export class AddressService {
     entity: { id: string, type: 'user' | 'restaurant' },
     trx: Knex.Transaction,
   ) {
-    const addresseswithUserId = addresses.map((address) => ({
+    const addressesWithUserId = addresses.map((address) => ({
       ...address,
       entity_id: entity.id,
       entity_type: entity.type,
     }));
 
-    return await this.addressesRepository.create(addresseswithUserId, trx);
+    return await this.addressesRepository.create(addressesWithUserId, trx);
   }
 }

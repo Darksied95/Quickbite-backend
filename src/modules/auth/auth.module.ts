@@ -10,6 +10,7 @@ import { TokenService } from './token/token.service';
 import { TokenRepository } from './token/token.repository';
 import { ConfigService } from '@nestjs/config';
 import { AdminModule } from '../admin/admin.module';
+import { RestaurantsModule } from '../restaurants/restaurants.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AdminModule } from '../admin/admin.module';
     AddressModule,
     CustomersModule,
     AdminModule,
+    RestaurantsModule,
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],

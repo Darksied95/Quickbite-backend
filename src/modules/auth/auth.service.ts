@@ -1,21 +1,22 @@
 import { Knex } from 'knex';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
 import { UserService } from '../users/users.service';
 import { HashingService } from './hashing.service';
 import { AddressService } from '../addresses/addresses.service';
 import { CustomersService } from '../customers/customers.service';
-import { CreateCustomerDto } from '../customers/dto/create-customers.dto';
 import { LoginRequestDTO } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserNotFoundException } from 'src/exceptions/user-not-found.exception';
 import { TokenService } from './token/token.service';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from '../users/dto/user-response.dto';
-import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { AdminService } from '../admin/admin.service';
-import { USER_ROLES } from '../users/user.constant';
+import { USER_ROLES, USER_ROLES_VALUES } from '../users/user.constant';
 import { JWTPayload } from './token/token.type';
+import { RegisterDTO } from './dto/register.dto';
+import { UserTable } from 'src/database/tables/table.type';
+import { RestaurantsService } from '../restaurants/restaurants.service';
 
 @Injectable()
 export class AuthService {
@@ -24,61 +25,46 @@ export class AuthService {
     private readonly customerService: CustomersService,
     private readonly userService: UserService,
     private readonly addressService: AddressService,
+    private readonly restaurantService: RestaurantsService,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     private readonly tokenService: TokenService,
     private readonly adminService: AdminService
   ) { }
 
-  async createCustomer(customerData: CreateCustomerDto) {
+
+  async register(registerDto: RegisterDTO) {
+    this.validateRoleSpecificData(registerDto)
+
     const userDetails = {
-      email: customerData.email,
-      first_name: customerData.first_name,
-      last_name: customerData.last_name,
-      password: await this.hashingService.hash(customerData.password),
-      phone: customerData.phone,
-    };
+      role: registerDto.role,
+      email: registerDto.email,
+      phone: registerDto.phone,
+      last_name: registerDto.last_name,
+      first_name: registerDto.first_name,
+      password: await this.hashingService.hash(registerDto.password),
+    }
 
-    return this.knex.transaction(async (trx) => {
-      const user = await this.userService.create(userDetails, USER_ROLES.customer, trx);
-
-      await this.addressService.create(customerData.addresses, { id: user.id, type: 'user' }, trx);
-      await this.customerService.create(
-        { user_id: user.id },
-        trx,
-      );
-
-      return null
-    });
-  }
-
-  async createRestaurantOwner(restaurantData: CreateCustomerDto) {
-    const userDetails = {
-      email: restaurantData.email,
-      first_name: restaurantData.first_name,
-      last_name: restaurantData.last_name,
-      password: await this.hashingService.hash(restaurantData.password),
-      phone: restaurantData.phone,
-    };
-
-    return this.knex.transaction(async (trx) => {
-      const user = await this.userService.create(userDetails, USER_ROLES.restaurant_owner, trx);
-      await this.addressService.create(restaurantData.addresses, { id: user.id, type: 'user' }, trx);
-
-      return null
-    });
-  }
-
-  async createAdmin(adminDetails: CreateAdminDto) {
-    const { addresses: adminAddresses, ...userDetails } = adminDetails
-    return this.knex.transaction(async (trx) => {
-      const user = await this.userService.create(userDetails, USER_ROLES.admin, trx)
-      await this.addressService.create(adminAddresses, { id: user.id, type: 'user' }, trx)
-      await this.adminService.create(user.id, trx)
-
-      return null
+    const user = await this.knex.transaction(async (trx) => {
+      const user = await this.userService.create(userDetails, trx)
+      await this.addressService.create([registerDto.address], { id: user.id, type: 'user' }, trx)
+      await this.handleRoleSpecificSetup(user, registerDto, trx)
+      return user
     })
 
+    const payload = { userId: user.id, email: user.email, role: user.role } satisfies JWTPayload
+
+    const refreshToken = await this.tokenService.createRefreshToken(user.id)
+
+    const tokens = {
+      access: await this.jwtService.signAsync(payload),
+      refresh: refreshToken
+    }
+
+    return {
+      user: plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true }),
+      tokens
+    }
   }
 
   async login(loginDetails: LoginRequestDTO) {
@@ -102,7 +88,7 @@ export class AuthService {
 
     const payload = { userId: user.id, email: user.email, role: user.role } satisfies JWTPayload
 
-    const { refreshToken } = await this.tokenService.createRefreshToken(user.id)
+    const refreshToken = await this.tokenService.createRefreshToken(user.id)
 
     const tokens = {
       access: await this.jwtService.signAsync(payload),
@@ -115,4 +101,54 @@ export class AuthService {
     }
 
   }
+
+  private validateRoleSpecificData(registerDto: RegisterDTO) {
+    switch (registerDto.role) {
+      case USER_ROLES.driver:
+        if (!registerDto.driver) {
+          throw new BadRequestException(`Missing required 'driver' field`)
+        }
+        break;
+
+      case USER_ROLES.restaurant_owner:
+        if (!registerDto.restaurant) {
+          throw new BadRequestException(`Missing required 'restaurant' field`)
+        }
+        break;
+
+      case USER_ROLES.admin:
+      case USER_ROLES.customer:
+        break;
+
+      default:
+        throw new BadRequestException(`Invalid role, valid roles are ${USER_ROLES_VALUES.join(",")}`)
+    }
+  }
+
+  private async handleRoleSpecificSetup(user: UserTable, registerDto: RegisterDTO, trx: Knex.Transaction) {
+    switch (registerDto.role) {
+
+      case USER_ROLES.restaurant_owner:
+        await this.restaurantService.create({ ...registerDto.restaurant!, owner_id: user.id }, trx)
+        break;
+
+      case USER_ROLES.customer:
+        await this.customerService.create({ user_id: user.id }, trx)
+        break;
+
+      case USER_ROLES.admin:
+        await this.adminService.create(user.id, trx)
+        break;
+
+      case USER_ROLES.driver:
+        break;
+
+      default:
+        throw new BadRequestException('Invalid role')
+    }
+  }
+
 }
+
+
+

@@ -1,3 +1,3 @@
 import { CreateRestaurantDto } from "./dto/create-restaurant.dto";
 
-export type CreateRestaurantInRepository = Omit<CreateRestaurantDto, 'addresses' | 'image'> & { logo_url?: string };
+export type CreateRestaurantInRepository = Omit<CreateRestaurantDto, 'address' | 'image'> & { logo_url?: string };

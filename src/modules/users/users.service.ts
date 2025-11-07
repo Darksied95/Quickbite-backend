@@ -9,7 +9,6 @@ import { InjectConnection } from 'nest-knexjs';
 import { UserRepository } from './users.repository';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UserNotFoundException } from 'src/exceptions/user-not-found.exception';
-import { USER_ROLES } from './user.constant';
 
 
 @Injectable()
@@ -22,14 +21,13 @@ export class UserService {
 
   async create(
     userData: Omit<CreateUserDTO, 'addresses'>,
-    role: USER_ROLES,
     trx: Knex.Transaction,
   ) {
     const existingUser = await this.userRepository.findByEmail(userData.email)
 
     if (existingUser) throw new ConflictException('User with this email already exists');
 
-    const user = await this.userRepository.create({ ...userData, role }, trx);
+    const user = await this.userRepository.create({ ...userData }, trx);
 
     if (!user) throw new InternalServerErrorException('Failed to create user');
 

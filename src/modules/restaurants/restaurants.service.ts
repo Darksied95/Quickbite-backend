@@ -4,10 +4,9 @@ import { InjectConnection } from 'nest-knexjs';
 import { Knex } from 'knex';
 import { AddressService } from '../addresses/addresses.service';
 import { RestaurantRepository } from './restaurants.repository';
-import { UserRepository } from '../users/users.repository';
+
 
 @Injectable()
-
 export class RestaurantsService {
     constructor(
         @InjectConnection() private readonly knex: Knex,
@@ -15,20 +14,20 @@ export class RestaurantsService {
         private readonly restaurantRepository: RestaurantRepository
     ) { }
 
-    create(data: CreateRestaurantDto) {
-        return this.knex.transaction(async (trx) => {
+    create(data: CreateRestaurantDto, trx?: Knex.Transaction) {
+        const executeCreate = async (trx: Knex.Transaction) => {
             const payload = {
                 name: data.name,
                 owner_id: data.owner_id,
                 phone: data.phone,
                 email: data.email,
                 description: data.description,
-                is_active: data.is_active
             }
             const restaurant = await this.restaurantRepository.create(payload, trx)
-            await this.addressService.create([data.addresses], { id: restaurant.id, type: 'restaurant' }, trx)
-            return
-        });
+            await this.addressService.create([data.address], { id: restaurant.id, type: 'restaurant' }, trx)
+            return restaurant
+        }
+        return trx ? executeCreate(trx) : this.knex.transaction(executeCreate)
     }
 
     private async validateUserEligibility(ownerId: string) {

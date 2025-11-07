@@ -8,5 +8,6 @@ import { AddressModule } from '../addresses/addresses.module';
   imports: [AddressModule],
   providers: [RestaurantsService, RestaurantRepository],
   controllers: [RestaurantsController],
+  exports: [RestaurantsService]
 })
 export class RestaurantsModule { }

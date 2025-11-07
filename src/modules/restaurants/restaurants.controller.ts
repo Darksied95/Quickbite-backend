@@ -19,8 +19,6 @@ export class RestaurantsController {
 
   create(@Request() req: ExpressRequest) {
     const user = req.user;
-    console.log(user);
-
     const data: CreateRestaurantDto = req.body;
     return this.restaurantsService.create(data);
   }

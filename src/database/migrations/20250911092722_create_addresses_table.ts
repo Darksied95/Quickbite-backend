@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
       table.uuid('entity_id').notNullable()
       table.enum('entity_type', ['user', 'restaurant']).notNullable()
       table.string('street_address').notNullable();
-      table.string('apartment_unit').notNullable();
+      table.string('apartment_unit');
       table.string('city').notNullable();
       table.string('state').notNullable();
       table.string('postal_code').notNullable();

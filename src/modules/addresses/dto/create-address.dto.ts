@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDecimal, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsDecimal, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateAddressDto {
   @ApiProperty({ example: 'Home' })
@@ -13,9 +13,9 @@ export class CreateAddressDto {
   street_address: string;
 
   @ApiProperty({ example: '12B' })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  apartment_unit: string;
+  apartment_unit?: string;
 
   @ApiProperty({ example: 'Uyo' })
   @IsString()

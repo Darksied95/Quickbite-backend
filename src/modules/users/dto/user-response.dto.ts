@@ -1,5 +1,6 @@
 import { Expose } from 'class-transformer';
 import { CreateUserDTO } from './create-user.dto';
+import { USER_ROLES } from '../user.constant';
 
 export class UserResponseDto implements Omit<CreateUserDTO, 'password'> {
   @Expose()
@@ -22,4 +23,7 @@ export class UserResponseDto implements Omit<CreateUserDTO, 'password'> {
 
   @Expose()
   updated_at: Date;
+
+  @Expose()
+  role: USER_ROLES
 }

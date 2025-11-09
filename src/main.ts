@@ -2,10 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
+import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true
+  });
+
+  app.useLogger(app.get(Logger))
+
 
   const config = new DocumentBuilder()
     .setTitle('QuickBite API')
@@ -26,8 +31,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-
-  app.useGlobalFilters(new DomainExceptionFilter())
 
   await app.listen(process.env.PORT ?? 3000);
 }

@@ -8,12 +8,17 @@ import { UserModule } from './modules/users/users.module';
 import { DatabaseModule } from './database/knex.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './modules/admin/admin.module';
+import { LoggerModule } from 'nestjs-pino';
+import { loggerConfig } from './common/config/logger.config';
+import { APP_FILTER } from '@nestjs/core';
+import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    LoggerModule.forRoot(loggerConfig),
     DatabaseModule,
     AuthModule,
     CustomersModule,
@@ -22,6 +27,12 @@ import { AdminModule } from './modules/admin/admin.module';
     AdminModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: DomainExceptionFilter
+    }
+  ],
 })
 export class AppModule { }

@@ -1,9 +1,9 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
-import { CreateRestaurantDto } from '../dto/create-restaurant.dto';
+import { CreateRestaurantDto } from '../dtos/create-restaurant.dto';
 import { InjectConnection } from 'nest-knexjs';
 import { Knex } from 'knex';
 import { AddressService } from '../../addresses/addresses.service';
-import { RestaurantRepository } from '../repositories/restaurants.repository';
+import { RestaurantRepository } from '../repositories/restaurant.repository';
 
 
 @Injectable()

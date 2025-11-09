@@ -10,7 +10,7 @@ import { TokenService } from './token/token.service';
 import { TokenRepository } from './token/token.repository';
 import { ConfigService } from '@nestjs/config';
 import { AdminModule } from '../admin/admin.module';
-import { RestaurantsModule } from '../restaurants/restaurants.module';
+import { RestaurantsModule } from '../restaurants/restaurant.module';
 
 @Module({
   imports: [

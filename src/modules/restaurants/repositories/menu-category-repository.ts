@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Knex } from "knex";
 import { InjectConnection } from "nest-knexjs";
-import { MenuCategoryDTO, UpdateMenuCategoryDTO } from "../dto/create-menu-category.dto";
+import { MenuCategoryDTO, UpdateMenuCategoryDTO } from "../dtos/create-menu-category.dto";
 import { TableNames } from "src/database/tables/table.constant";
 import { MenuCategoryTable } from "src/database/tables/table.type";
 

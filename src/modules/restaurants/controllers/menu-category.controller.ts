@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "src/modules/auth/auth.guard";
-import { MenuCategoryDTO, UpdateMenuCategoryDTO } from "../dto/create-menu-category.dto";
-import { MenuCategoriesService } from "../services/menu-categories.service";
+import { MenuCategoryDTO, UpdateMenuCategoryDTO } from "../dtos/create-menu-category.dto";
+import { MenuCategoriesService } from "../services/menu-category.service";
 import { RestaurantOwnerGuard } from "../restaurant-owner.guard";
 
 @Controller('restaurants/:restaurantId/menu-categories')

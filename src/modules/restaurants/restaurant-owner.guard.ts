@@ -1,6 +1,6 @@
 import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Request } from "express";
-import { RestaurantRepository } from "./repositories/restaurants.repository";
+import { RestaurantRepository } from "./repositories/restaurant.repository";
 import { isUUID } from "class-validator";
 
 @Injectable()

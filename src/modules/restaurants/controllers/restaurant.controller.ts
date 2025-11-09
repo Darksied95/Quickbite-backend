@@ -1,6 +1,6 @@
 import { Controller, Post, UseGuards, Request, Get, Body } from '@nestjs/common';
-import { RestaurantsService } from '../services/restaurants.service';
-import { CreateRestaurantDto } from '../dto/create-restaurant.dto';
+import { RestaurantsService } from '../services/restaurant.service';
+import { CreateRestaurantDto } from '../dtos/create-restaurant.dto';
 import { AuthGuard } from '../../auth/auth.guard';
 import { Request as ExpressRequest } from 'express';
 import { RolesGuard } from 'src/common/guards/roles.guard';

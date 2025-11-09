@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreateRestaurantInRepository } from "../restaurants.types";
+import { CreateRestaurantInRepository } from "../restaurant.type";
 import { Knex } from "knex";
 import { TableNames } from "src/database/tables/table.constant";
 import { RestaurantProfileTable } from "src/database/tables/table.type";

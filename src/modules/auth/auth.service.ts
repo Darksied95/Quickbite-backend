@@ -16,7 +16,7 @@ import { USER_ROLES, USER_ROLES_VALUES } from '../users/user.constant';
 import { JWTPayload } from './token/token.type';
 import { RegisterDTO } from './dto/register.dto';
 import { UserTable } from 'src/database/tables/table.type';
-import { RestaurantsService } from '../restaurants/restaurants.service';
+import { RestaurantsService } from '../restaurants/services/restaurants.service';
 
 @Injectable()
 export class AuthService {

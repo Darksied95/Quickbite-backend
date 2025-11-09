@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { CreateRestaurantInRepository } from "./restaurants.types";
+import { CreateRestaurantInRepository } from "../restaurants.types";
 import { Knex } from "knex";
 import { TableNames } from "src/database/tables/table.constant";
 import { RestaurantProfileTable } from "src/database/tables/table.type";
-import { Restaurant_APPROVAL_STATES } from "./restaurant.constant";
+import { Restaurant_APPROVAL_STATES } from "../restaurant.constant";
 import { InjectConnection } from "nest-knexjs";
 
 interface Restaurant {
     create(data: CreateRestaurantInRepository, trx: Knex.Transaction): Promise<RestaurantProfileTable>
-    findByOwnerId(owner_id: string): Promise<RestaurantProfileTable | null>
+    findOne(id: string): Promise<RestaurantProfileTable | null>
 }
 @Injectable()
 export class RestaurantRepository implements Restaurant {
@@ -19,8 +19,8 @@ export class RestaurantRepository implements Restaurant {
         return restaurant
     }
 
-    async findByOwnerId(owner_id: string) {
-        const restaurant = await this.knex(TableNames.RestaurantProfiles).where({ id: owner_id }).first();
+    async findOne(id: string) {
+        const restaurant = await this.knex(TableNames.RestaurantProfiles).where({ id }).first();
         return restaurant || null
     }
 
@@ -38,5 +38,9 @@ export class RestaurantRepository implements Restaurant {
             .whereIn('status', blockingStatuses)
             .first()
         return restaurant || null
+    }
+
+    async getAll() {
+        return await this.knex(TableNames.RestaurantProfiles)
     }
 }

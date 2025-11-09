@@ -1,9 +1,9 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
-import { CreateRestaurantDto } from './dto/create-restaurant.dto';
+import { CreateRestaurantDto } from '../dto/create-restaurant.dto';
 import { InjectConnection } from 'nest-knexjs';
 import { Knex } from 'knex';
-import { AddressService } from '../addresses/addresses.service';
-import { RestaurantRepository } from './restaurants.repository';
+import { AddressService } from '../../addresses/addresses.service';
+import { RestaurantRepository } from '../repositories/restaurants.repository';
 
 
 @Injectable()
@@ -28,6 +28,11 @@ export class RestaurantsService {
             return restaurant
         }
         return trx ? executeCreate(trx) : this.knex.transaction(executeCreate)
+    }
+
+    async getAll() {
+        const restaurants = await this.restaurantRepository.getAll()
+        return restaurants
     }
 
     private async validateUserEligibility(ownerId: string) {

@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
         table.uuid("item_id").notNullable().references("id").inTable(TableNames.MenuItems).onDelete('CASCADE').onUpdate('CASCADE');
         table.integer("quantity_change").notNullable();
         table.enum("transaction_type", ['sale', 'restock', 'adjustment', 'waste', 'damaged']).notNullable();
-        table.uuid("order_id").nullable(); // order_id, purchase_order_id, etc.
+        table.uuid("order_id").nullable();
         table.enum("reference_type", ["order", "manual"]).nullable();
         table.text("notes").nullable();
         table.uuid("created_by").nullable().references("id").inTable(TableNames.Users).onDelete('SET NULL').onUpdate('CASCADE');
@@ -16,8 +16,7 @@ export async function up(knex: Knex): Promise<void> {
         table.index("item_id");
         table.index("transaction_type");
         table.index("created_at");
-        table.index(["item_id", "created_at"]); // composite index for querying item history
-        table.index("reference_id"); // for looking up all transactions related to an order
+        table.index(["item_id", "created_at"]);
     });
 }
 

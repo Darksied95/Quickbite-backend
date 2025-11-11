@@ -17,6 +17,7 @@ import { JWTPayload } from './token/token.type';
 import { RegisterDTO } from './dto/register.dto';
 import { UserTable } from 'src/database/tables/table.type';
 import { RestaurantsService } from '../restaurants/services/restaurant.service';
+import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class AuthService {
@@ -29,8 +30,11 @@ export class AuthService {
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     private readonly tokenService: TokenService,
-    private readonly adminService: AdminService
-  ) { }
+    private readonly adminService: AdminService,
+    private readonly logger: PinoLogger
+  ) {
+    this.logger.setContext(AuthService.name)
+  }
 
 
   async register(registerDto: RegisterDTO) {
@@ -52,6 +56,9 @@ export class AuthService {
       return user
     })
 
+    const roleSpecificContext = await this.handleUserContextAggregration(user.id, user.role)
+
+
     const payload = { userId: user.id, email: user.email, role: user.role } satisfies JWTPayload
 
     const refreshToken = await this.tokenService.createRefreshToken(user.id)
@@ -63,7 +70,8 @@ export class AuthService {
 
     return {
       user: plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true }),
-      tokens
+      tokens,
+      ...roleSpecificContext
     }
   }
 
@@ -86,6 +94,10 @@ export class AuthService {
 
     if (!isvalidPassword) throw new UnauthorizedException("Invalid Credentials")
 
+    const roleSpecificContext = await this.handleUserContextAggregration(user.id, user.role)
+
+    this.logger.info(user.id, user.role, roleSpecificContext)
+
     const payload = { userId: user.id, email: user.email, role: user.role } satisfies JWTPayload
 
     const refreshToken = await this.tokenService.createRefreshToken(user.id)
@@ -97,7 +109,8 @@ export class AuthService {
 
     return {
       user: plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true }),
-      tokens
+      tokens,
+      ...roleSpecificContext
     }
 
   }
@@ -146,6 +159,22 @@ export class AuthService {
       default:
         throw new BadRequestException('Invalid role')
     }
+  }
+
+  private async handleUserContextAggregration(userId: string, role: USER_ROLES) {
+    let result: Record<string, any> = {}
+    switch (role) {
+      case USER_ROLES.restaurant_owner:
+        const restaurants = await this.restaurantService.getAllByOwner(userId)
+        result = { restaurants }
+        break;
+
+      default:
+        result = {}
+        break;
+    }
+
+    return result
   }
 
 }

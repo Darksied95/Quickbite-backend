@@ -9,7 +9,6 @@ async function bootstrap() {
     bufferLogs: true
   });
 
-  app.useLogger(app.get(Logger))
 
 
   const config = new DocumentBuilder()
@@ -32,6 +31,7 @@ async function bootstrap() {
     }),
   );
 
+  app.useLogger(app.get(Logger))
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

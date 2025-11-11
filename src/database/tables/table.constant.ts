@@ -17,4 +17,5 @@ export enum TableNames {
     Reviews = 'reviews',
     Inventories = 'inventories',
     Notifications = 'notifications',
+    InventoryTransactions = 'inventory_transaction'
 }

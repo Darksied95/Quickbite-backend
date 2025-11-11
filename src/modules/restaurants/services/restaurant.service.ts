@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateRestaurantDto } from '../dtos/create-restaurant.dto';
 import { InjectConnection } from 'nest-knexjs';
 import { Knex } from 'knex';
@@ -31,19 +31,13 @@ export class RestaurantsService {
     }
 
     async getAll() {
-        const restaurants = await this.restaurantRepository.getAll()
+        const restaurants = await this.restaurantRepository.findAll({})
         return restaurants
     }
 
-    private async validateUserEligibility(ownerId: string) {
-        const existingRestaurant = await this.restaurantRepository.findApprovedByOwnerId(ownerId)
-
-        if (existingRestaurant) {
-            throw new ConflictException('User already has a restaurant')
-        }
-
-
-
+    async getAllByOwner(owner_id: string) {
+        const restaurant = await this.restaurantRepository.findAll({ owner_id })
+        return restaurant
     }
 }
 

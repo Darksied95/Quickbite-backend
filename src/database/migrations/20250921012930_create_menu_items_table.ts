@@ -12,6 +12,7 @@ export async function up(knex: Knex): Promise<void> {
         table.decimal('price').notNullable();
         table.boolean('is_available').notNullable().defaultTo(true);
         table.string('image_url');
+        table.timestamp('deleted_at').nullable().defaultTo(null)
         table.timestamps(true, true);
 
         table.index("category_id");

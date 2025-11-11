@@ -10,6 +10,7 @@ interface IMenuCategories {
     create(data: MenuCategoryDTO): Promise<MenuCategoryTable>,
     findAll(restaurant_id: string): Promise<MenuCategoryTable[]>
     find(id: string): Promise<MenuCategoryTable | null>
+    findByIds(ids: string[], restaurant_id: string): Promise<Pick<MenuCategoryTable, "id">[]>
     update(id: string, data: UpdateMenuCategoryDTO): Promise<MenuCategoryTable>
     delete(id: string): Promise<number>
 }
@@ -46,5 +47,9 @@ export class MenuCategoriesRepository implements IMenuCategories {
 
     delete(id: string) {
         return this.knex(TableNames.MenuCategories).where({ id }).del()
+    }
+
+    findByIds(ids: string[], restaurant_id: string) {
+        return this.knex(TableNames.MenuCategories).select("id").whereIn("id", ids).andWhere("restaurant_id", restaurant_id)
     }
 }

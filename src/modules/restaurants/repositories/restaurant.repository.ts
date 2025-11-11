@@ -9,6 +9,7 @@ import { InjectConnection } from "nest-knexjs";
 interface Restaurant {
     create(data: CreateRestaurantInRepository, trx: Knex.Transaction): Promise<RestaurantProfileTable>
     findOne(id: string): Promise<RestaurantProfileTable | null>
+    findAll(query: { owner_id?: string }): Promise<RestaurantProfileTable[]>
 }
 @Injectable()
 export class RestaurantRepository implements Restaurant {
@@ -40,7 +41,7 @@ export class RestaurantRepository implements Restaurant {
         return restaurant || null
     }
 
-    async getAll() {
-        return await this.knex(TableNames.RestaurantProfiles)
+    async findAll(query: { owner_id?: string }) {
+        return await this.knex(TableNames.RestaurantProfiles).where(query)
     }
 }

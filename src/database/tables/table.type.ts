@@ -131,6 +131,7 @@ export interface MenuItemTable {
     restaurant_id: string
     ingredients: string[]
     is_available: boolean
+    deleted_at: null | Date
     created_at: Date
     updated_at: Date
 }

@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('name').notNullable();
         table.uuid('category_id').notNullable().references('id').inTable(TableNames.MenuCategories).onDelete('CASCADE').onUpdate('CASCADE');
         table.uuid('restaurant_id').notNullable().references('id').inTable(TableNames.RestaurantProfiles).onDelete('CASCADE').onUpdate('CASCADE');
+        table.integer('stock').notNullable().defaultTo(0)
         table.text('description');
         table.decimal('price').notNullable();
         table.boolean('is_available').notNullable().defaultTo(true);

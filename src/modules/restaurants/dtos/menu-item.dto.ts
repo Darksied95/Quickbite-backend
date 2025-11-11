@@ -1,6 +1,6 @@
 import { PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, IsUUID, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, IsUUID, ValidateNested } from "class-validator";
 
 
 export class MenuItem {
@@ -26,6 +26,10 @@ export class MenuItem {
     @IsUUID()
     @IsNotEmpty()
     category_id: string
+
+    @IsNumber()
+    @IsInt()
+    stock: number
 }
 
 export class CreateMenuItemDTO {

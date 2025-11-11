@@ -12,6 +12,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string("email")
         table.text("description")
         table.string("logo_url");
+        table.timestamp("deleted_at").defaultTo(null);
         table.boolean("is_active").notNullable().defaultTo(true);
         table.enum("status", Object.values(Restaurant_APPROVAL_STATES)).notNullable().defaultTo(Restaurant_APPROVAL_STATES.Pending);
         table.timestamps(true, true);

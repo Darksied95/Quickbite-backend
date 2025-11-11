@@ -1,14 +1,11 @@
+import { PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsEmail, IsObject, IsOptional, IsPhoneNumber, IsString, IsUUID, ValidateNested } from "class-validator";
+import { IsEmail, IsObject, IsPhoneNumber, IsString, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "src/modules/addresses/dto/create-address.dto";
 
 export class CreateRestaurantDto {
     @IsString()
     name: string
-
-    @IsUUID()
-    @IsOptional()
-    owner_id?: string
 
     @IsObject()
     @ValidateNested()
@@ -24,3 +21,6 @@ export class CreateRestaurantDto {
     @IsString()
     description: string
 }
+
+
+export class UpdateRestaurantDto extends PartialType(CreateRestaurantDto) { }

@@ -142,7 +142,7 @@ export class AuthService {
     switch (registerDto.role) {
 
       case USER_ROLES.restaurant_owner:
-        await this.restaurantService.create({ ...registerDto.restaurant!, owner_id: user.id }, trx)
+        await this.restaurantService.create({ ...registerDto.restaurant!, owner_id: user.id }, user.role, trx)
         break;
 
       case USER_ROLES.customer:

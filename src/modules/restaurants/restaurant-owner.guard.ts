@@ -2,6 +2,7 @@ import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException,
 import { Request } from "express";
 import { RestaurantRepository } from "./repositories/restaurant.repository";
 import { isUUID } from "class-validator";
+import { USER_ROLES } from "../users/user.constant";
 
 @Injectable()
 export class RestaurantOwnerGuard implements CanActivate {
@@ -12,10 +13,14 @@ export class RestaurantOwnerGuard implements CanActivate {
         const restaurant_id = request.params.restaurantId
         const user = request.user!
 
+        if (user.role !== USER_ROLES.restaurant_owner && user.role !== USER_ROLES.admin) {
+            throw new ForbiddenException('You are not authorized to manage restaurants.');
+        }
+
         if (!restaurant_id || !isUUID(restaurant_id)) {
             throw new BadRequestException("Invalid restaurant Id")
         }
-        const restaurant = await this.restaurantRepository.findOne(restaurant_id)
+        const restaurant = await this.restaurantRepository.findById(restaurant_id)
 
         if (!restaurant) {
             throw new NotFoundException('Restaurant not found')

@@ -98,6 +98,7 @@ export interface RestaurantProfileTable {
     logo_url: string
     is_active: boolean
     status: Restaurant_APPROVAL_STATES
+    deleted_at: Date | null
     created_at: Date
     updated_at: Date
 }

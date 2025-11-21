@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Get, Body, Param, ParseUUIDPipe, Patch } from '@nestjs/common';
+import { Controller, Post, UseGuards, Delete, Get, Body, Param, ParseUUIDPipe, Patch, HttpCode, HttpStatus } from '@nestjs/common';
 import { RestaurantsService } from '../services/restaurant.service';
 import { CreateRestaurantDto, UpdateRestaurantDto } from '../dtos/create-restaurant.dto';
 import { AuthGuard } from '../../auth/auth.guard';
@@ -40,7 +40,8 @@ export class RestaurantsController {
   }
 
   @Patch(":id")
-  @UseGuards(AuthGuard, RestaurantOwnerGuard)
+  @UseGuards(RestaurantOwnerGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   update(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() data: UpdateRestaurantDto,
@@ -48,6 +49,13 @@ export class RestaurantsController {
     return this.restaurantsService.update(id, data)
   }
 
-
+  @Delete(":id")
+  @UseGuards(RestaurantOwnerGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(
+    @Param("id", ParseUUIDPipe) id: string,
+  ) {
+    return this.restaurantsService.delete(id)
+  }
 
 }

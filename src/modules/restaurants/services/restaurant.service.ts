@@ -59,6 +59,10 @@ export class RestaurantsService {
     update(id: string, data: UpdateRestaurantDto) {
         return this.restaurantRepository.update(id, data)
     }
+
+    delete(restaurant_id: string) {
+        return this.restaurantRepository.delete(restaurant_id)
+    }
 }
 
 

@@ -1,4 +1,4 @@
-import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Request } from "express";
 import { RestaurantRepository } from "./repositories/restaurant.repository";
 import { isUUID } from "class-validator";
@@ -10,8 +10,12 @@ export class RestaurantOwnerGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<Request>()
-        const restaurant_id = request.params.restaurantId
-        const user = request.user!
+        const restaurant_id = request.params.restaurantId || request.params.id
+        const user = request.user
+
+        if (!user) {
+            throw new UnauthorizedException('Authentication required.');
+        }
 
         if (user.role !== USER_ROLES.restaurant_owner && user.role !== USER_ROLES.admin) {
             throw new ForbiddenException('You are not authorized to manage restaurants.');
@@ -24,6 +28,9 @@ export class RestaurantOwnerGuard implements CanActivate {
 
         if (!restaurant) {
             throw new NotFoundException('Restaurant not found')
+        }
+        if (user.role === USER_ROLES.admin) {
+            return true
         }
 
         if (restaurant.owner_id !== user.userId) {

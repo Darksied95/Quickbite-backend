@@ -11,6 +11,7 @@ import { TokenRepository } from './token/token.repository';
 import { ConfigService } from '@nestjs/config';
 import { AdminModule } from '../admin/admin.module';
 import { RestaurantsModule } from '../restaurants/restaurant.module';
+import { DriverModule } from '../drivers/driver.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RestaurantsModule } from '../restaurants/restaurant.module';
     AddressModule,
     CustomersModule,
     AdminModule,
+    DriverModule,
     RestaurantsModule,
     JwtModule.registerAsync({
       global: true,

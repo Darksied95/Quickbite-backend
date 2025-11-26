@@ -18,6 +18,7 @@ import { RegisterDTO } from './dto/register.dto';
 import { UserTable } from 'src/database/tables/table.type';
 import { RestaurantsService } from '../restaurants/services/restaurant.service';
 import { PinoLogger } from 'nestjs-pino';
+import { DriverService } from '../drivers/driver.service';
 
 @Injectable()
 export class AuthService {
@@ -31,11 +32,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly tokenService: TokenService,
     private readonly adminService: AdminService,
+    private readonly driverService: DriverService,
     private readonly logger: PinoLogger
   ) {
     this.logger.setContext(AuthService.name)
   }
 
+  // ============================================
+  // Registration Flow
+  // ============================================
 
   async register(registerDto: RegisterDTO) {
     this.validateRoleSpecificData(registerDto)
@@ -74,6 +79,10 @@ export class AuthService {
       ...roleSpecificContext
     }
   }
+
+  // ============================================
+  // Login Flow
+  // ============================================
 
   async login(loginDetails: LoginRequestDTO) {
 
@@ -115,6 +124,10 @@ export class AuthService {
 
   }
 
+  // ============================================
+  // Private Helpers - Role Validation
+  // ============================================
+
   private validateRoleSpecificData(registerDto: RegisterDTO) {
     switch (registerDto.role) {
       case USER_ROLES.driver:
@@ -138,6 +151,11 @@ export class AuthService {
     }
   }
 
+  // ============================================
+  // Private Helpers - Role Setup
+  // ============================================
+
+
   private async handleRoleSpecificSetup(user: UserTable, registerDto: RegisterDTO, trx: Knex.Transaction) {
     switch (registerDto.role) {
 
@@ -154,6 +172,7 @@ export class AuthService {
         break;
 
       case USER_ROLES.driver:
+        await this.driverService.create({ user_id: user.id, vehicle_type: registerDto.driver!.vehicleType }, trx)
         break;
 
       default:
@@ -161,12 +180,22 @@ export class AuthService {
     }
   }
 
+  // ============================================
+  // Private Helpers - Role Context
+  // ============================================
+
+
   private async handleUserContextAggregration(userId: string, role: USER_ROLES) {
     let result: Record<string, any> = {}
     switch (role) {
       case USER_ROLES.restaurant_owner:
         const restaurants = await this.restaurantService.getAllByOwner(userId)
         result = { restaurants }
+        break;
+
+      case USER_ROLES.driver:
+        const driver_profile = await this.driverService.findByUserId(userId)
+        result = { driver_profile }
         break;
 
       default:

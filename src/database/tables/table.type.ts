@@ -2,6 +2,7 @@ import { USER_ROLES, USER_STATUS } from "src/modules/users/user.constant";
 import { TableNames } from "./table.constant";
 import { Knex } from "knex";
 import { Restaurant_APPROVAL_STATES } from "src/modules/restaurants/restaurant.constant";
+import { VEHICLE_TYPE } from "src/modules/drivers/driver.constants";
 
 export type TypedKnex = Knex<DatabaseSchemaTypes>;
 
@@ -84,6 +85,7 @@ export interface CustomerProfilesTable {
     user_id: string
     total_orders: number
     total_spent: number
+    deleted_at: Date | null
     created_at: Date
     updated_at: Date
 }
@@ -106,10 +108,11 @@ export interface RestaurantProfileTable {
 export interface DriverProfileTable {
     id: string
     user_id: string
-    vehicle_type: string
+    vehicle_type: VEHICLE_TYPE
     total_rides: number
     status: string
     is_available: boolean
+    deleted_at: Date | null
     created_at: Date
     updated_at: Date
 }

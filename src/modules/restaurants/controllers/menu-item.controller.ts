@@ -58,7 +58,6 @@ export class MenuItemController {
     delete(
         @Param("id", ParseUUIDPipe) id: string,
         @Param("restaurantId", ParseUUIDPipe) restaurant_id: string,
-        @Body() data: MenuItemUpdate
     ) {
         return this.menuItemService.delete(id, restaurant_id)
     }

@@ -10,8 +10,7 @@ export async function up(knex: Knex): Promise<void> {
       .notNullable()
       .references('id')
       .inTable(TableNames.Users)
-      .onDelete('CASCADE')
-      .onUpdate('CASCADE');
+    table.timestamp('deleted_at').nullable();
     table.integer('total_orders').notNullable().defaultTo(0);
     table.decimal('total_spent');
     table.timestamps(true, true);

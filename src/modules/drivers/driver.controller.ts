@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, UseGuards } from "@nestjs/common";
 import { DriverService } from "./driver.service";
 import { UpdateDriverDTO } from "./dto/update-driver.dto";
+import { AuthGuard } from "../auth/auth.guard";
 
 @Controller("drivers")
-
+@UseGuards(AuthGuard)
 export class DriverController {
     constructor(private readonly driverService: DriverService) { }
 

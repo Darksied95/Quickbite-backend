@@ -12,6 +12,8 @@ import { LoggerModule } from 'nestjs-pino';
 import { loggerConfig } from './common/config/logger.config';
 import { APP_FILTER } from '@nestjs/core';
 import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
+import { TypeOrmDBModule } from './database/typeorm.module';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
     }),
     LoggerModule.forRoot(loggerConfig),
     DatabaseModule,
+    TypeOrmDBModule,
     AuthModule,
     CustomersModule,
     RestaurantsModule,
@@ -35,4 +38,6 @@ import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
     }
   ],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private dataSource: DataSource) { }
+}

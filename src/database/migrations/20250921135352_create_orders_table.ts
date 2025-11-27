@@ -1,5 +1,5 @@
 import type { Knex } from "knex";
-import { ORDER_STATUS } from "../../modules/orders/order.constant";
+import { ORDER_STATUS, ORDER_STATUS_VALUES } from "../../modules/orders/order.constant";
 import { TableNames } from "../tables/table.constant";
 
 
@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
         table.uuid("driver_id").notNullable().references("id").inTable(TableNames.DriverProfiles).onDelete('CASCADE').onUpdate('CASCADE');
         table.uuid("customer_id").notNullable().references("id").inTable(TableNames.Users).onDelete('CASCADE').onUpdate('CASCADE');
         table.uuid("customer_address_id").notNullable().references("id").inTable(TableNames.Addresses).onDelete('CASCADE').onUpdate('CASCADE');
-        table.enum("status", ORDER_STATUS).notNullable().defaultTo("pending");
+        table.enum("status", ORDER_STATUS_VALUES).notNullable().defaultTo("pending");
         table.string("order_number").notNullable(); //human readable order number
         table.decimal("total_cost").notNullable();
         table.decimal("delivery_fee").notNullable();

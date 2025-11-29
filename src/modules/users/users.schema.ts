@@ -7,8 +7,8 @@ export const userStatusEnum = pgEnum('user_status', USER_STATUS_VALUES as [strin
 export const users = pgTable('users', {
     id: uuid().primaryKey().defaultRandom(),
     email: varchar({ length: 255 }).notNull().unique(),
-    firstName: varchar({ length: 255 }).notNull(),
-    lastName: varchar({ length: 255 }).notNull(),
+    first_name: varchar({ length: 255 }).notNull(),
+    last_name: varchar({ length: 255 }).notNull(),
     password: varchar({ length: 255 }).notNull(),
     phone: varchar({ length: 20 }).notNull(),
     role: userRoleEnum().notNull(),

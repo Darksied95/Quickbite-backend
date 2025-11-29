@@ -21,12 +21,12 @@ export async function seedRestaurants(db: NodePgDatabase<typeof schema>) {
     const restaurants = Array.from({ length: 10 }, () => ({
         id: randomUUID(),
         name: faker.company.name(),
-        ownerId: restaurantOwners[Math.floor(Math.random() * restaurantOwners.length)].id,
+        owner_id: restaurantOwners[Math.floor(Math.random() * restaurantOwners.length)].id,
         phone: '+2347012345669',
         email: faker.internet.email(),
         description: faker.lorem.sentence(),
-        logoUrl: faker.image.food(),
-        isActive: Math.random() > 0.5,
+        logo_url: faker.image.food(),
+        is_active: Math.random() > 0.5,
         status: Restaurant_APPROVAL_STATES.Approved,
     }));
 

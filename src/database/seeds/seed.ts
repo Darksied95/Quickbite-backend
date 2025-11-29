@@ -6,7 +6,7 @@ import { seedAddresses } from './02_addresses.seed';
 import { seedCustomerProfiles } from './03_customers.seed';
 import { seedAdminProfiles } from './04_admins.seed';
 import { seedRestaurants } from './05_restaurant_profiles.seed';
-import { seedDrivers } from './06_driver_profiles';
+import { seedDrivers } from './06_driver_profiles.seed';
 import { seedMenuCategories } from './07_menu_categories.seed';
 import { seedMenuItems } from './08_menu_items.seed';
 import { sql } from 'drizzle-orm';

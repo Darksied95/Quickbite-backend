@@ -16,9 +16,9 @@ export async function seedMenuCategories(db: NodePgDatabase<typeof schema>) {
 
     const categories = Array.from({ length: 10 }, () => ({
         id: randomUUID(),
-        restaurantId: restaurants[Math.floor(Math.random() * restaurants.length)].id,
+        restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
         name: faker.commerce.productName(),
-        isActive: Math.random() > 0.5,
+        is_active: Math.random() > 0.5,
     }));
 
     await db.insert(schema.menuCategories).values(categories);

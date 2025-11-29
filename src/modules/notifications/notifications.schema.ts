@@ -5,13 +5,13 @@ export const notificationTypeEnum = pgEnum('notification_type', ['order', 'deliv
 
 export const notifications = pgTable('notifications', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().references(() => users.id),
+    user_id: uuid('user_id').notNull().references(() => users.id),
     type: notificationTypeEnum('type').notNull(),
     title: varchar('title').notNull(),
     message: text('message').notNull(),
-    isRead: boolean('is_read').notNull().default(false),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+    is_read: boolean('is_read').notNull().default(false),
+    created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 }, (table) => [
-    index('notifications_user_id_idx').on(table.userId),
+    index('notifications_user_id_idx').on(table.user_id),
 ]);

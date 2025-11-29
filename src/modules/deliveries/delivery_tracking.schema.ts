@@ -6,12 +6,12 @@ export const deliveryStatusEnum = pgEnum('delivery_status', DELIVERY_STATUS as [
 
 export const deliveryTracking = pgTable('delivery_tracking', {
     id: uuid('id').primaryKey().defaultRandom(),
-    orderId: uuid('order_id').notNull().references(() => orders.id),
+    order_id: uuid('order_id').notNull().references(() => orders.id),
     status: deliveryStatusEnum('status').notNull(),
     latitude: decimal('latitude', { precision: 10, scale: 8 }).notNull(),
     longitude: decimal('longitude', { precision: 11, scale: 8 }).notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+    created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 }, (table) => [
-    index('delivery_tracking_order_id_idx').on(table.orderId),
+    index('delivery_tracking_order_id_idx').on(table.order_id),
 ]);

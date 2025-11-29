@@ -19,11 +19,11 @@ export async function seedDrivers(db: NodePgDatabase<typeof schema>) {
 
     const drivers = driverUsers.map((user) => ({
         id: randomUUID(),
-        userId: user.id,
-        vehicleType: VEHICLE_TYPE_VALUE[Math.floor(Math.random() * VEHICLE_TYPE_VALUE.length)],
-        totalRides: Math.floor(Math.random() * 100),
+        user_id: user.id,
+        vehicle_type: VEHICLE_TYPE_VALUE[Math.floor(Math.random() * VEHICLE_TYPE_VALUE.length)],
+        total_rides: Math.floor(Math.random() * 100),
         status: 'active',
-        isAvailable: Math.random() > 0.5,
+        is_available: Math.random() > 0.5,
     }));
 
     await db.insert(schema.driverProfiles).values(drivers);

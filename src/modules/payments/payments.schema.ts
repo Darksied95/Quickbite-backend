@@ -5,13 +5,13 @@ export const paymentStatusEnum = pgEnum('payment_status', ['pending', 'completed
 
 export const payments = pgTable('payments', {
     id: uuid('id').primaryKey().defaultRandom(),
-    orderId: uuid('order_id').notNull().references(() => orders.id).unique(),
-    transactionId: varchar('transaction_id').notNull().unique(),
-    paymentMethod: varchar('payment_method').notNull(),
+    order_id: uuid('order_id').notNull().references(() => orders.id).unique(),
+    transaction_id: varchar('transaction_id').notNull().unique(),
+    payment_method: varchar('payment_method').notNull(),
     status: paymentStatusEnum('status').notNull().default('pending'),
     amount: integer('amount').notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+    created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 }, (table) => [
-    index('payments_order_id_idx').on(table.orderId),
+    index('payments_order_id_idx').on(table.order_id),
 ]);

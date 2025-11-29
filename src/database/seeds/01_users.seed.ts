@@ -12,8 +12,8 @@ export async function seedUsers(db: NodePgDatabase<typeof schema>) {
     const users = Array.from({ length: 30 }, () => ({
         id: randomUUID(),
         email: faker.internet.email(),
-        firstName: faker.name.firstName(),
-        lastName: faker.name.lastName(),
+        first_name: faker.name.firstName(),
+        last_name: faker.name.lastName(),
         password: hashedPassword,
         phone: '+2347012345669',
         role: USER_ROLES_VALUES[Math.floor(Math.random() * USER_ROLES_VALUES.length)] as any,

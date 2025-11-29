@@ -12,7 +12,7 @@ export async function seedAdminProfiles(db: NodePgDatabase<typeof schema>) {
 
     const admins = adminsId.map(user => ({
         id: randomUUID(),
-        userId: user.id,
+        user_id: user.id,
     }));
 
     await db.insert(schema.adminProfiles).values(admins);

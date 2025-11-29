@@ -7,19 +7,19 @@ export async function seedAddresses(db: NodePgDatabase<typeof schema>) {
 
     const userAddresses = Array.from({ length: 10 }, () => ({
         id: randomUUID(),
-        entityId: randomUUID(),
-        entityType: 'user' as const,
-        streetAddress: faker.address.streetAddress(),
-        apartmentUnit: faker.address.buildingNumber(),
+        entity_id: randomUUID(),
+        entity_type: 'user' as const,
+        street_address: faker.address.streetAddress(),
+        apartment_unit: faker.address.buildingNumber(),
         city: faker.address.city(),
         state: faker.address.state(),
-        postalCode: faker.address.zipCode(),
+        postal_code: faker.address.zipCode(),
         country: 'Nigeria',
         latitude: parseFloat(faker.address.latitude()),
         longitude: parseFloat(faker.address.longitude()),
-        isDefault: faker.datatype.boolean(),
+        is_default: faker.datatype.boolean(),
         label: faker.lorem.word(),
-        deliveryInstructions: faker.lorem.sentence(),
+        delivery_instructions: faker.lorem.sentence(),
     }));
 
     await db.insert(schema.addresses).values(userAddresses);

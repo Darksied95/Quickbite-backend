@@ -8,15 +8,15 @@ export const driverStatusEnum = pgEnum('driver_status', USER_STATUS_VALUES as [s
 
 export const driverProfiles = pgTable('driver_profiles', {
     id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').notNull().unique().references(() => users.id, { onDelete: 'restrict' }),
-    vehicleType: vehicleTypeEnum('vehicle_type').notNull(),
-    totalRides: integer('total_rides').notNull().default(0),
+    user_id: uuid('user_id').notNull().unique().references(() => users.id, { onDelete: 'restrict' }),
+    vehicle_type: vehicleTypeEnum('vehicle_type').notNull(),
+    total_rides: integer('total_rides').notNull().default(0),
     status: driverStatusEnum('status').notNull().default('active'),
-    isAvailable: boolean('is_available').notNull().default(false),
-    deletedAt: timestamp('deleted_at', { withTimezone: true }),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+    is_available: boolean('is_available').notNull().default(false),
+    deleted_at: timestamp('deleted_at', { withTimezone: true }),
+    created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 }, (table) => [
     index('driver_profiles_status_idx').on(table.status),
-    index('driver_profiles_is_available_idx').on(table.isAvailable),
+    index('driver_profiles_is_available_idx').on(table.is_available),
 ]);

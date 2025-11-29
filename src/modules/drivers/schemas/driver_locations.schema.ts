@@ -3,11 +3,11 @@ import { driverProfiles } from '../schemas/driver_profiles.schema';
 
 export const driverLocations = pgTable('driver_locations', {
     id: uuid('id').primaryKey().defaultRandom(),
-    driverId: uuid('driver_id').notNull().references(() => driverProfiles.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+    driver_id: uuid('driver_id').notNull().references(() => driverProfiles.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
     latitude: decimal('latitude', { precision: 10, scale: 8 }).notNull(),
     longitude: decimal('longitude', { precision: 11, scale: 8 }).notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+    created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 }, (table) => [
-    index('driver_locations_driver_id_idx').on(table.driverId),
+    index('driver_locations_driver_id_idx').on(table.driver_id),
 ]);

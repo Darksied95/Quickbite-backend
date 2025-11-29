@@ -26,13 +26,13 @@ export async function seedMenuItems(db: NodePgDatabase<typeof schema>) {
     const menuItems = Array.from({ length: 30 }, () => ({
         id: randomUUID(),
         name: faker.commerce.productName(),
-        categoryId: categories[Math.floor(Math.random() * categories.length)].id,
-        restaurantId: restaurants[Math.floor(Math.random() * restaurants.length)].id,
+        category_id: categories[Math.floor(Math.random() * categories.length)].id,
+        restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,
         stock: Math.floor(Math.random() * 100),
         description: faker.lorem.sentence(),
         price: Math.floor(Math.random() * (10000 - 1000) + 1000),
-        isAvailable: Math.random() > 0.5,
-        imageUrl: faker.image.imageUrl(),
+        is_available: Math.random() > 0.5,
+        image_url: faker.image.imageUrl(),
     }));
 
     await db.insert(schema.menuItems).values(menuItems);

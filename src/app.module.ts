@@ -5,15 +5,13 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { RestaurantsModule } from './modules/restaurants/restaurant.module';
 import { UserModule } from './modules/users/users.module';
-import { DatabaseModule } from './database/knex.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './modules/admin/admin.module';
 import { LoggerModule } from 'nestjs-pino';
 import { loggerConfig } from './common/config/logger.config';
 import { APP_FILTER } from '@nestjs/core';
 import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
-import { TypeOrmDBModule } from './database/typeorm.module';
-import { DataSource } from 'typeorm';
+import { DrizzleModule } from './database/drizzle.module';
 
 @Module({
   imports: [
@@ -21,8 +19,7 @@ import { DataSource } from 'typeorm';
       isGlobal: true,
     }),
     LoggerModule.forRoot(loggerConfig),
-    DatabaseModule,
-    TypeOrmDBModule,
+    DrizzleModule,
     AuthModule,
     CustomersModule,
     RestaurantsModule,
@@ -38,6 +35,4 @@ import { DataSource } from 'typeorm';
     }
   ],
 })
-export class AppModule {
-  constructor(private dataSource: DataSource) { }
-}
+export class AppModule { }

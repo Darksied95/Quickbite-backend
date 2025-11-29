@@ -1,15 +1,19 @@
-import { Knex } from "knex";
-import { TableNames } from "../tables/table.constant";
-import { USER_ROLES } from "../../modules/users/user.constant";
-import { randomUUID } from "node:crypto";
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq } from 'drizzle-orm';
+import * as schema from '../drizzle.schema';
+import { USER_ROLES } from '../../modules/users/user.constant';
+import { randomUUID } from 'node:crypto';
 
-export async function seed(knex: Knex) {
-    const adminsId = await knex(TableNames.Users).select('id').where('role', USER_ROLES.admin)
+export async function seedAdminProfiles(db: NodePgDatabase<typeof schema>) {
+    const adminsId = await db
+        .select({ id: schema.users.id })
+        .from(schema.users)
+        .where(eq(schema.users.role, USER_ROLES.admin));
 
     const admins = adminsId.map(user => ({
-        user_id: user.id,
         id: randomUUID(),
-    }))
+        userId: user.id,
+    }));
 
-    await knex(TableNames.AdminProfiles).insert(admins)
+    await db.insert(schema.adminProfiles).values(admins);
 }

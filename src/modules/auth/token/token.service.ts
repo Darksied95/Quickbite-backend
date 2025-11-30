@@ -1,14 +1,15 @@
 import { randomBytes } from "node:crypto";
-import { TokenRepository } from "./token.repository";
 import { HashingService } from "../hashing.service";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
+import { DRIZZLE, DrizzleDb, DrizzleTransaction } from "src/database/drizzle.module";
+import { tokens } from "./token.schema";
 
 
 @Injectable()
 export class TokenService {
     constructor(
-        private tokenRepository: TokenRepository,
         private readonly hashingService: HashingService,
+        @Inject(DRIZZLE) private readonly db: DrizzleDb,
     ) { }
 
     async createRefreshToken(user_id: string) {
@@ -17,9 +18,9 @@ export class TokenService {
         const hashedToken = await this.hashingService.hash(token)
         const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000
 
-        await this.tokenRepository.create({
-            user_id,
+        await this.db.insert(tokens).values({
             token: hashedToken,
+            user_id,
             expires_at: new Date(Date.now() + THIRTY_DAYS_IN_MS)
         })
 

@@ -7,7 +7,6 @@ import { AddressModule } from '../addresses/addresses.module';
 import { CustomersModule } from '../customers/customers.module';
 import { JwtModule } from '@nestjs/jwt';
 import { TokenService } from './token/token.service';
-import { TokenRepository } from './token/token.repository';
 import { ConfigService } from '@nestjs/config';
 import { AdminModule } from '../admin/admin.module';
 import { RestaurantsModule } from '../restaurants/restaurant.module';
@@ -45,7 +44,6 @@ import { DriverModule } from '../drivers/driver.module';
     AuthService,
     HashingService,
     TokenService,
-    TokenRepository
   ],
 })
 export class AuthModule { }

@@ -4,7 +4,6 @@ import { CreateRestaurantDto, UpdateRestaurantDto } from '../dtos/create-restaur
 import { AuthGuard } from '../../auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { USER_ROLES } from '../../users/user.constant';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { JWTPayload } from 'src/modules/auth/token/token.type';
 import { RestaurantOwnerGuard } from '../restaurant-owner.guard';
@@ -19,12 +18,12 @@ export class RestaurantsController {
 
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(USER_ROLES.admin, USER_ROLES.restaurant_owner)
+  @Roles("admin", "restaurant_owner")
   create(
     @Body() data: CreateRestaurantDto,
     @CurrentUser() user: JWTPayload,
   ) {
-    return this.restaurantsService.create({ ...data, owner_id: user.userId }, user.role);
+    return this.restaurantsService.create({ ...data, owner_id: user.userId });
   }
 
   @Get()

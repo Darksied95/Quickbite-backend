@@ -1,7 +1,2 @@
-export enum VEHICLE_TYPE {
-    Car = "car",
-    Motorbike = "motorbike",
-    Bicycle = "bicycle"
-}
-
-export const VEHICLE_TYPE_VALUE = Object.values(VEHICLE_TYPE)
+export const VEHICLE_TYPE_VALUE = ["car", "motorbike", "bicycle"] as const
+export type VEHICLE_TYPE = typeof VEHICLE_TYPE_VALUE[number]

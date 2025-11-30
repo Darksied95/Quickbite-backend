@@ -1,13 +1,13 @@
-export enum ORDER_STATUS {
-    pending = 'pending',
-    delivered = 'delivered',
-    accepted = 'accepted',
-    restaurant_rejected = 'restaurant_rejected',
-    customer_cancelled = 'customer_cancelled',
-    driver_cancelled = 'driver_cancelled',
-    ready_for_pickup = 'ready_for_pickup',
-    in_transit = 'in_transit',
-}
+export const ORDER_STATUS = [
+    'pending',
+    'delivered',
+    'accepted',
+    'restaurant_rejected',
+    'customer_cancelled',
+    'driver_cancelled',
+    'ready_for_pickup',
+    'in_transit',
+]
 
 export enum DELIVERY_STATUS {
     driver_assigned = 'driver_assigned',

@@ -36,9 +36,8 @@ export class MenuItemController {
     @Get(":id")
     findById(
         @Param("id", ParseUUIDPipe) id: string,
-        @Param("restaurantId", ParseUUIDPipe) restaurant_id: string,
     ) {
-        return this.menuItemService.findById(id, restaurant_id)
+        return this.menuItemService.findById(id)
     }
 
     @Patch(":id")

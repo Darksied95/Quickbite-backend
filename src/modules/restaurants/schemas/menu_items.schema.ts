@@ -19,3 +19,7 @@ export const menuItems = pgTable('menu_items', {
     index('menu_items_category_id_idx').on(table.category_id),
     index('menu_items_restaurant_id_idx').on(table.restaurant_id),
 ]);
+
+export type IMenuItem = typeof menuItems.$inferSelect;
+export type INewMenuItem = typeof menuItems.$inferInsert;
+export type IUpdateMenuItem = Partial<Pick<IMenuItem, 'name' | 'description' | 'price' | 'stock' | 'is_available' | 'image_url'>>;

@@ -1,23 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateAddressDto } from './dto/create-address.dto';
-import { AddressesRepository } from './addresses.repository';
-import { Knex } from 'knex';
+import { DRIZZLE, DrizzleDb, DrizzleTransaction } from 'src/database/drizzle.module';
+import { addresses } from './addresses.schema';
 
 @Injectable()
 export class AddressService {
-  constructor(private readonly addressesRepository: AddressesRepository) { }
+  constructor(
+    @Inject(DRIZZLE) private readonly db: DrizzleDb) { }
 
   async create(
-    addresses: CreateAddressDto[],
+    addressesData: CreateAddressDto[],
     entity: { id: string, type: 'user' | 'restaurant' },
-    trx: Knex.Transaction,
+    trx?: DrizzleTransaction,
   ) {
-    const addressesWithUserId = addresses.map((address) => ({
+
+    const addressesWithUserId = addressesData.map((address) => ({
       ...address,
       entity_id: entity.id,
       entity_type: entity.type,
     }));
 
-    return await this.addressesRepository.create(addressesWithUserId, trx);
+    const dbInstance = trx ?? this.db
+
+    return await dbInstance.insert(addresses).values(addressesWithUserId).returning();
   }
 }

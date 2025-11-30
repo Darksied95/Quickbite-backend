@@ -17,7 +17,7 @@ export async function seedUsers(db: NodePgDatabase<typeof schema>) {
         password: hashedPassword,
         phone: '+2347012345669',
         role: USER_ROLES_VALUES[Math.floor(Math.random() * USER_ROLES_VALUES.length)] as any,
-        status: USER_STATUS.active as any,
+        status: "active" as USER_STATUS,
     }));
 
     await db.insert(schema.users).values(users);

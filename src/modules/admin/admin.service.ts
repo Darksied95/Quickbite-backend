@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { AdminRepository } from './admin.repository';
-import { Knex } from 'knex';
+import { DrizzleTransaction } from 'src/database/drizzle.module';
+import { adminProfiles } from './admin.schema';
 
 @Injectable()
 export class AdminService {
-    constructor(private adminRepository: AdminRepository) { }
 
-    create(user_id: string, trx: Knex.Transaction) {
-        return this.adminRepository.create(user_id, trx)
+    create(user_id: string, trx: DrizzleTransaction) {
+        return trx.insert(adminProfiles).values({ user_id }).returning()
     }
 }

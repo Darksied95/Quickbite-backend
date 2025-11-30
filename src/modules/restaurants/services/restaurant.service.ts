@@ -1,28 +1,23 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRestaurantDto, UpdateRestaurantDto } from '../dtos/create-restaurant.dto';
-import { InjectConnection } from 'nest-knexjs';
-import { Knex } from 'knex';
 import { AddressService } from '../../addresses/addresses.service';
+import { DRIZZLE, DrizzleDb, DrizzleTransaction } from 'src/database/drizzle.module';
+import { restaurantProfiles } from '../schemas/restaurant_profiles.schema';
 import { RestaurantRepository } from '../repositories/restaurant.repository';
-import { USER_ROLES } from 'src/modules/users/user.constant';
 
 
 @Injectable()
 
 export class RestaurantsService {
     constructor(
-        @InjectConnection() private readonly knex: Knex,
         private readonly addressService: AddressService,
-        private readonly restaurantRepository: RestaurantRepository
+        @Inject(DRIZZLE) private readonly db: DrizzleDb,
+        private readonly restaurantRepository: RestaurantRepository,
     ) { }
 
 
-    create(data: CreateRestaurantDto & { owner_id: string }, role: USER_ROLES, trx?: Knex.Transaction,) {
-
-        if (role !== USER_ROLES.restaurant_owner) {
-            throw new ForbiddenException('You do not have permission to create a restaurant')
-        }
-        const executeCreate = async (trx: Knex.Transaction) => {
+    create(data: CreateRestaurantDto & { owner_id: string }, trx?: DrizzleTransaction,) {
+        const executeCreate = async (trx: DrizzleTransaction) => {
             const payload = {
                 name: data.name,
                 owner_id: data.owner_id,
@@ -30,21 +25,19 @@ export class RestaurantsService {
                 email: data.email,
                 description: data.description,
             }
-            const restaurant = await this.restaurantRepository.create(payload, trx)
+            const [restaurant] = await trx.insert(restaurantProfiles).values(payload).returning()
             await this.addressService.create([data.address], { id: restaurant.id, type: 'restaurant' }, trx)
             return restaurant
         }
-        return trx ? executeCreate(trx) : this.knex.transaction(executeCreate)
+        return trx ? executeCreate(trx) : this.db.transaction(executeCreate)
     }
 
-    async getAll() {
-        const restaurants = await this.restaurantRepository.findAll({})
-        return restaurants
+    getAll() {
+        return this.restaurantRepository.findMany()
     }
 
-    async getAllByOwner(owner_id: string) {
-        const restaurant = await this.restaurantRepository.findAll({ owner_id })
-        return restaurant
+    getAllByOwner(owner_id: string) {
+        return this.restaurantRepository.findAllActiveByOwner(owner_id)
     }
 
     async findById(id: string) {

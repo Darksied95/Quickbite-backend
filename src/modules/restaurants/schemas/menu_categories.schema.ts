@@ -6,8 +6,14 @@ export const menuCategories = pgTable('menu_categories', {
     name: varchar('name').notNull(),
     restaurant_id: uuid('restaurant_id').notNull().references(() => restaurantProfiles.id),
     is_active: boolean('is_active').notNull().default(true),
+    deleted_at: timestamp('deleted_at', { withTimezone: true }),
     created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 }, (table) => [
     index('menu_categories_restaurant_id_idx').on(table.restaurant_id),
 ]);
+
+export type INewMenuCategory = typeof menuCategories.$inferInsert;
+export type IMenuCategory = typeof menuCategories.$inferSelect;
+export type IUpdateMenuCategory = Partial<Pick<IMenuCategory, 'name' | 'is_active'>>;
+

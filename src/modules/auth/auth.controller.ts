@@ -11,9 +11,10 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('login')
-  async login(@Body() loginDetails: LoginRequestDTO): Promise<LoginResponseDTO> {
+  async login(@Body() loginDetails: LoginRequestDTO) {
     const result = await this.authService.login(loginDetails)
-    return result
+    return ""
+    //fix
   }
 
   @Post('register')

@@ -1,13 +1,13 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { MenuItem, MenuItemUpdate } from "../dtos/menu-item.dto";
-import { MenuItemRepository } from "../repositories/menu-item.repository";
+import { MenuItemsRepository } from "../repositories/menu-items.repository";
 import { PinoLogger } from "nestjs-pino";
 import { MenuCategoriesService } from "./menu-category.service";
 
 @Injectable()
 export class MenuItemService {
     constructor(
-        private readonly menuItemRepo: MenuItemRepository,
+        private readonly menuItemRepo: MenuItemsRepository,
         private readonly menuCategoryService: MenuCategoriesService,
         private readonly logger: PinoLogger
     ) {
@@ -42,18 +42,12 @@ export class MenuItemService {
         return this.menuItemRepo.findAll(where)
     }
 
-    findById(id: string, restaurant_id?: string) {
-        const where: { id: string, restaurant_id?: string } = { id }
-
-        if (restaurant_id) {
-            where.restaurant_id = restaurant_id
-        }
-
-        return this.menuItemRepo.findById(where)
+    findById(id: string) {
+        return this.menuItemRepo.findById(id)
     }
 
     async update(id: string, restaurant_id: string, data: MenuItemUpdate) {
-        const item = await this.menuItemRepo.findById({ id })
+        const item = await this.menuItemRepo.findById(id)
 
         if (!item) {
             throw new NotFoundException('Item not found')

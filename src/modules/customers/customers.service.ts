@@ -1,13 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CustomerRepository } from './customers.repository';
-import { ICreateCustomer } from './customer.types';
-import { Knex } from 'knex';
+import { DrizzleTransaction } from 'src/database/drizzle.module';
+import { INewCustomer } from './customers.schema';
 
 @Injectable()
 export class CustomersService {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(private readonly customerRepository: CustomerRepository) { }
 
-  async create(customerData: ICreateCustomer, trx: Knex.Transaction) {
+  async create(customerData: INewCustomer, trx: DrizzleTransaction) {
     const user = await this.customerRepository.create(customerData, trx);
 
     if (!user) {

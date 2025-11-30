@@ -3,8 +3,8 @@ import { users } from '../../users/users.schema';
 import { USER_STATUS_VALUES } from '../../users/user.constant';
 import { VEHICLE_TYPE_VALUE } from '../driver.constants';
 
-export const vehicleTypeEnum = pgEnum('vehicle_type', VEHICLE_TYPE_VALUE as [string, ...string[]]);
-export const driverStatusEnum = pgEnum('driver_status', USER_STATUS_VALUES as [string, ...string[]]);
+export const vehicleTypeEnum = pgEnum('vehicle_type', VEHICLE_TYPE_VALUE);
+export const driverStatusEnum = pgEnum('driver_status', USER_STATUS_VALUES);
 
 export const driverProfiles = pgTable('driver_profiles', {
     id: uuid('id').primaryKey().defaultRandom(),

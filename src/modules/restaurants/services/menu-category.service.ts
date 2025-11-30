@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { MenuCategoriesRepository } from "../repositories/menu-category-repository";
+import { MenuCategoriesRepository } from "../repositories/menu-categories.repository";
 import { MenuCategoryDTO, UpdateMenuCategoryDTO } from "../dtos/create-menu-category.dto";
 import { PinoLogger } from "nestjs-pino";
 
@@ -29,7 +29,7 @@ export class MenuCategoriesService {
     }
 
     find(id: string) {
-        return this.menuCategoriesRepo.find(id)
+        return this.menuCategoriesRepo.findById(id)
     }
 
     findByIds(ids: string[], restaurant_id: string) {
@@ -37,10 +37,12 @@ export class MenuCategoriesService {
     }
 
     async delete(id: string) {
-        const deleteCount = await this.menuCategoriesRepo.delete(id)
+        const deletedItem = await this.menuCategoriesRepo.delete(id)
 
-        if (deleteCount === 0) {
+        if (!deletedItem) {
             throw new NotFoundException('Category not found.')
         }
+
+        return
     }
 }

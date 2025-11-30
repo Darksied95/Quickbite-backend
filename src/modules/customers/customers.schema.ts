@@ -10,3 +10,8 @@ export const customerProfiles = pgTable('customer_profiles', {
     created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updated_at: timestamp('updated_at', { withTimezone: true }).notNull().$onUpdate(() => new Date()),
 });
+
+
+export type ICustomer = typeof customerProfiles.$inferSelect
+export type INewCustomer = typeof customerProfiles.$inferInsert
+export type IUpdateCustomer = Pick<ICustomer, 'total_orders' | 'total_spent'>

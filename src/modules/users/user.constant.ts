@@ -1,15 +1,7 @@
-export enum USER_ROLES {
-    driver = 'driver',
-    customer = 'customer',
-    restaurant_owner = 'restaurant_owner',
-    admin = 'admin'
-}
+export const USER_ROLES_VALUES = ['driver', 'customer', 'restaurant_owner', 'admin'] as const
 
-export enum USER_STATUS {
-    active = 'active',
-    inactive = 'inactive',
-    suspended = 'suspended'
-}
+export type USER_ROLES = typeof USER_ROLES_VALUES[number]
 
-export const USER_ROLES_VALUES = Object.values(USER_ROLES)
-export const USER_STATUS_VALUES = Object.values(USER_STATUS)
+
+export const USER_STATUS_VALUES = ["active", "inactive", "suspended"] as const
+export type USER_STATUS = typeof USER_STATUS_VALUES[number]

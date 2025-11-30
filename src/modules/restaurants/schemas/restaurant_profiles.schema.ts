@@ -22,3 +22,7 @@ export const restaurantProfiles = pgTable('restaurant_profiles', {
     index('restaurant_profiles_owner_status_idx').on(table.owner_id, table.status),
     index('restaurant_profiles_is_active_idx').on(table.is_active),
 ]);
+
+export type Restaurant = typeof restaurantProfiles.$inferSelect
+export type NewRestaurant = typeof restaurantProfiles.$inferInsert
+export type UpdateRestaurant = Partial<Restaurant>

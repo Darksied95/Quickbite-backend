@@ -1,7 +1,6 @@
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../drizzle.schema';
 import { randomUUID } from 'node:crypto';
-import { USER_ROLES } from '../../modules/users/user.constant';
 import { Restaurant_APPROVAL_STATES } from '../../modules/restaurants/restaurant.constant';
 import { eq } from 'drizzle-orm';
 
@@ -11,7 +10,7 @@ export async function seedRestaurants(db: NodePgDatabase<typeof schema>) {
     const restaurantOwners = await db
         .select({ id: schema.users.id })
         .from(schema.users)
-        .where(eq(schema.users.role, USER_ROLES.restaurant_owner));
+        .where(eq(schema.users.role, "restaurant_owner"));
 
     if (restaurantOwners.length === 0) {
         console.log('⚠️ No restaurant owners found. Skipping restaurant seeding.');

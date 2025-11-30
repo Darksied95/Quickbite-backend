@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { Knex } from "knex";
 import { DriverRepository } from "./driver.repository";
 import { ICreateDriver } from "./driver.interface";
 import { UpdateDriverDTO } from "./dto/update-driver.dto";
+import { DrizzleTransaction } from "src/database/drizzle.module";
 
 @Injectable()
 export class DriverService {
@@ -10,7 +10,7 @@ export class DriverService {
         private readonly DriverRepo: DriverRepository
     ) { }
 
-    create(data: ICreateDriver, trx: Knex.Transaction) {
+    create(data: ICreateDriver, trx: DrizzleTransaction) {
         return this.DriverRepo.create(data, trx)
     }
 

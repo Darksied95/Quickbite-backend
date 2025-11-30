@@ -1,6 +1,4 @@
-import { Knex } from 'knex';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectConnection } from 'nest-knexjs';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../users/users.service';
 import { HashingService } from './hashing.service';
 import { AddressService } from '../addresses/addresses.service';
@@ -15,15 +13,16 @@ import { AdminService } from '../admin/admin.service';
 import { USER_ROLES, USER_ROLES_VALUES } from '../users/user.constant';
 import { JWTPayload } from './token/token.type';
 import { RegisterDTO } from './dto/register.dto';
-import { UserTable } from 'src/database/tables/table.type';
 import { RestaurantsService } from '../restaurants/services/restaurant.service';
 import { PinoLogger } from 'nestjs-pino';
 import { DriverService } from '../drivers/driver.service';
+import { DRIZZLE, DrizzleDb, DrizzleTransaction } from 'src/database/drizzle.module';
+import { User } from '../users/users.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectConnection() private readonly knex: Knex,
+    @Inject(DRIZZLE) private readonly db: DrizzleDb,
     private readonly customerService: CustomersService,
     private readonly userService: UserService,
     private readonly addressService: AddressService,
@@ -54,7 +53,7 @@ export class AuthService {
       password: await this.hashingService.hash(registerDto.password),
     }
 
-    const user = await this.knex.transaction(async (trx) => {
+    const user = await this.db.transaction(async (trx) => {
       const user = await this.userService.create(userDetails, trx)
       await this.addressService.create([registerDto.address], { id: user.id, type: 'user' }, trx)
       await this.handleRoleSpecificSetup(user, registerDto, trx)
@@ -130,20 +129,20 @@ export class AuthService {
 
   private validateRoleSpecificData(registerDto: RegisterDTO) {
     switch (registerDto.role) {
-      case USER_ROLES.driver:
+      case 'driver':
         if (!registerDto.driver) {
           throw new BadRequestException(`Missing required 'driver' field`)
         }
         break;
 
-      case USER_ROLES.restaurant_owner:
+      case 'restaurant_owner':
         if (!registerDto.restaurant) {
           throw new BadRequestException(`Missing required 'restaurant' field`)
         }
         break;
 
-      case USER_ROLES.admin:
-      case USER_ROLES.customer:
+      case 'admin':
+      case 'customer':
         break;
 
       default:
@@ -156,22 +155,22 @@ export class AuthService {
   // ============================================
 
 
-  private async handleRoleSpecificSetup(user: UserTable, registerDto: RegisterDTO, trx: Knex.Transaction) {
+  private async handleRoleSpecificSetup(user: User, registerDto: RegisterDTO, trx: DrizzleTransaction) {
     switch (registerDto.role) {
 
-      case USER_ROLES.restaurant_owner:
-        await this.restaurantService.create({ ...registerDto.restaurant!, owner_id: user.id }, user.role, trx)
+      case 'restaurant_owner':
+        await this.restaurantService.create({ ...registerDto.restaurant!, owner_id: user.id }, trx)
         break;
 
-      case USER_ROLES.customer:
+      case 'customer':
         await this.customerService.create({ user_id: user.id }, trx)
         break;
 
-      case USER_ROLES.admin:
+      case 'admin':
         await this.adminService.create(user.id, trx)
         break;
 
-      case USER_ROLES.driver:
+      case 'driver':
         await this.driverService.create({ user_id: user.id, vehicle_type: registerDto.driver!.vehicleType }, trx)
         break;
 
@@ -188,12 +187,12 @@ export class AuthService {
   private async handleUserContextAggregration(userId: string, role: USER_ROLES) {
     let result: Record<string, any> = {}
     switch (role) {
-      case USER_ROLES.restaurant_owner:
+      case 'restaurant_owner':
         const restaurants = await this.restaurantService.getAllByOwner(userId)
         result = { restaurants }
         break;
 
-      case USER_ROLES.driver:
+      case 'driver':
         const driver_profile = await this.driverService.findByUserId(userId)
         result = { driver_profile }
         break;

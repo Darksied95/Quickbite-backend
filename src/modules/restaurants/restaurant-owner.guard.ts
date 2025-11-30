@@ -17,7 +17,7 @@ export class RestaurantOwnerGuard implements CanActivate {
             throw new UnauthorizedException('Authentication required.');
         }
 
-        if (user.role !== USER_ROLES.restaurant_owner && user.role !== USER_ROLES.admin) {
+        if (user.role !== "restaurant_owner" && user.role !== "admin") {
             throw new ForbiddenException('You are not authorized to manage restaurants.');
         }
 
@@ -29,7 +29,7 @@ export class RestaurantOwnerGuard implements CanActivate {
         if (!restaurant) {
             throw new NotFoundException('Restaurant not found')
         }
-        if (user.role === USER_ROLES.admin) {
+        if (user.role === "admin") {
             return true
         }
 

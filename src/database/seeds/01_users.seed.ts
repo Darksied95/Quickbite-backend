@@ -1,10 +1,10 @@
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as bcrypt from 'bcrypt';
 import * as schema from '../drizzle.schema';
 import { randomUUID } from 'node:crypto';
 import { USER_ROLES_VALUES, USER_STATUS } from '../../modules/users/user.constant';
+import { DrizzleDb } from '../drizzle.module';
 
-export async function seedUsers(db: NodePgDatabase<typeof schema>) {
+export async function seedUsers(db: DrizzleDb) {
     const { faker } = await import('@faker-js/faker');
 
     const hashedPassword = await bcrypt.hash('password123', 10);

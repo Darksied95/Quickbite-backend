@@ -15,10 +15,4 @@ export class UserController {
     async getLoggedInUserDetails() {
         return "here"
     }
-
-    @Get(":email")
-    async getUserByEmail(@Param("email") email: string) {
-        return this.userService.test(email)
-    }
-
 }

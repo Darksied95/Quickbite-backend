@@ -25,7 +25,7 @@ import { DriverModule } from '../drivers/driver.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const secret = configService.get<string>('JWT_SECRET')
-        const expiresIn = configService.get<string>('JWT_EXPIRES_IN')
+        const expiresIn = configService.get<string>('JWT_EXPIRES_IN') as any
 
         if (!secret || !expiresIn) {
           throw new Error('JWT environment variables are required')

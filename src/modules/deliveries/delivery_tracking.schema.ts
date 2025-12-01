@@ -2,7 +2,7 @@ import { pgTable, uuid, decimal, timestamp, pgEnum, index } from 'drizzle-orm/pg
 import { orders } from '../orders/schemas/orders.schema';
 import { DELIVERY_STATUS } from '../orders/order.constant';
 
-export const deliveryStatusEnum = pgEnum('delivery_status', DELIVERY_STATUS as [string, ...string[]]);
+export const deliveryStatusEnum = pgEnum('delivery_status', DELIVERY_STATUS);
 
 export const deliveryTracking = pgTable('delivery_tracking', {
     id: uuid('id').primaryKey().defaultRandom(),

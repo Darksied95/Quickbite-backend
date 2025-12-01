@@ -16,7 +16,7 @@ export type DrizzleTransaction = PgTransaction<NodePgQueryResultHKT, typeof sche
             provide: DRIZZLE,
             useFactory: () => {
                 const pool = new Pool({
-                    connectionString: process.env.DB_NAME,
+                    connectionString: process.env.DB_URL,
                 });
                 return drizzle(pool, {
                     schema,

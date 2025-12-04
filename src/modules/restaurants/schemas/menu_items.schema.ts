@@ -1,6 +1,7 @@
-import { pgTable, uuid, varchar, text, integer, boolean, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, integer, boolean, timestamp, index, check } from 'drizzle-orm/pg-core';
 import { menuCategories } from './menu_categories.schema';
 import { restaurantProfiles } from './restaurant_profiles.schema';
+import { sql } from 'drizzle-orm';
 
 export const menuItems = pgTable('menu_items', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -18,6 +19,7 @@ export const menuItems = pgTable('menu_items', {
 }, (table) => [
     index('menu_items_category_id_idx').on(table.category_id),
     index('menu_items_restaurant_id_idx').on(table.restaurant_id),
+    check('stock_non_negative', sql`${table.stock} >=0`)
 ]);
 
 export type IMenuItem = typeof menuItems.$inferSelect;

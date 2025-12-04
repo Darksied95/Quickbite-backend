@@ -12,6 +12,7 @@ import { loggerConfig } from './common/config/logger.config';
 import { APP_FILTER } from '@nestjs/core';
 import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
 import { DrizzleModule } from './database/drizzle.module';
+import { OrderModule } from './modules/orders/order.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DrizzleModule } from './database/drizzle.module';
     RestaurantsModule,
     UserModule,
     AdminModule,
+    OrderModule
   ],
   controllers: [AppController],
   providers: [

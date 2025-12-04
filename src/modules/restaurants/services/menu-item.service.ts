@@ -46,6 +46,10 @@ export class MenuItemService {
         return this.menuItemRepo.findById(id)
     }
 
+    findByIds(ids: string[]) {
+        return this.menuItemRepo.findByIds(ids)
+    }
+
     async update(id: string, restaurant_id: string, data: MenuItemUpdate) {
         const item = await this.menuItemRepo.findById(id)
 
@@ -64,4 +68,6 @@ export class MenuItemService {
     async delete(id: string, restaurant_id: string) {
         return this.menuItemRepo.delete({ id, restaurant_id })
     }
+
+
 } 

@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginRequestDTO, LoginResponseDTO } from './dto/login.dto';
+import { LoginRequestDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
 
 @ApiTags('auth')
@@ -11,10 +11,10 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(@Body() loginDetails: LoginRequestDTO) {
     const result = await this.authService.login(loginDetails)
-    return ""
-    //fix
+    return result
   }
 
   @Post('register')

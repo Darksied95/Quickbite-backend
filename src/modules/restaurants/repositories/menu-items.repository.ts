@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { DRIZZLE, DrizzleDb } from "src/database/drizzle.module";
 import { INewMenuItem, IUpdateMenuItem, menuItems } from "../schemas/menu_items.schema";
-import { eq, isNull, and } from "drizzle-orm";
+import { eq, isNull, and, inArray } from "drizzle-orm";
 
 @Injectable()
 export class MenuItemsRepository {
@@ -40,6 +40,13 @@ export class MenuItemsRepository {
         return this.db.query
             .menuItems
             .findFirst({ where: and(eq(menuItems.id, id), this.activeMenuItems()) })
+    }
+
+    findByIds(ids: string[]) {
+        return this.db.query.menuItems.findMany({
+            where: and(inArray(menuItems.id, ids), this.activeMenuItems())
+        })
+
     }
 
     update(where: { id: string, restaurant_id: string, data: IUpdateMenuItem }) {

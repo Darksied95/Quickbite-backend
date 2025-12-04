@@ -2,7 +2,6 @@ import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException,
 import { Request } from "express";
 import { RestaurantRepository } from "./repositories/restaurant.repository";
 import { isUUID } from "class-validator";
-import { USER_ROLES } from "../users/user.constant";
 
 @Injectable()
 export class RestaurantOwnerGuard implements CanActivate {

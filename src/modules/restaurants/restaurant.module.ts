@@ -9,6 +9,7 @@ import { MenuCategoriesController } from './controllers/menu-category.controller
 import { MenuItemService } from './services/menu-item.service';
 import { MenuItemsRepository } from './repositories/menu-items.repository';
 import { MenuItemController } from './controllers/menu-item.controller';
+import { RestaurantOwnerGuard } from './restaurant-owner.guard';
 
 @Module({
   imports: [AddressModule],
@@ -18,13 +19,19 @@ import { MenuItemController } from './controllers/menu-item.controller';
     MenuCategoriesService,
     MenuCategoriesRepository,
     MenuItemService,
-    MenuItemsRepository
+    MenuItemsRepository,
+    RestaurantOwnerGuard
   ],
   controllers: [
     RestaurantsController,
     MenuCategoriesController,
-    MenuItemController
+    MenuItemController,
   ],
-  exports: [RestaurantsService]
+  exports: [
+    RestaurantsService,
+    RestaurantOwnerGuard,
+    RestaurantRepository,
+    MenuItemService
+  ]
 })
 export class RestaurantsModule { }

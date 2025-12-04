@@ -1,6 +1,5 @@
-import { pgTable, uuid, varchar, integer, timestamp, pgEnum, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, integer, timestamp, pgEnum, index } from 'drizzle-orm/pg-core';
 import { restaurantProfiles } from '../../restaurants/schemas/restaurant_profiles.schema';
-import { driverProfiles } from '../../drivers/schemas/driver_profiles.schema';
 import { users } from '../../users/users.schema';
 import { addresses } from '../../addresses/addresses.schema';
 import { ORDER_STATUS } from '../order.constant';
@@ -10,11 +9,10 @@ export const orderStatusEnum = pgEnum('order_status', ORDER_STATUS as [string, .
 export const orders = pgTable('orders', {
     id: uuid('id').primaryKey().defaultRandom(),
     restaurant_id: uuid('restaurant_id').notNull().references(() => restaurantProfiles.id),
-    driver_id: uuid('driver_id').notNull().references(() => driverProfiles.id),
+    driver_id: uuid('driver_id').references(() => users.id),
     customer_id: uuid('customer_id').notNull().references(() => users.id),
     customer_address_id: uuid('customer_address_id').notNull().references(() => addresses.id),
     status: orderStatusEnum('status').notNull().default('pending'),
-    order_number: varchar('order_number').notNull().unique(),
     total_cost: integer('total_cost').notNull(),
     delivery_fee: integer('delivery_fee').notNull(),
     created_at: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
@@ -24,3 +22,8 @@ export const orders = pgTable('orders', {
     index('orders_driver_id_idx').on(table.driver_id),
     index('orders_customer_id_idx').on(table.customer_id),
 ]);
+
+
+
+type OrderInsert = typeof orders.$inferInsert;
+export type ICreateOrder = Omit<OrderInsert, 'id' | 'created_at' | 'updated_at' | 'status' | 'driver_id'>;

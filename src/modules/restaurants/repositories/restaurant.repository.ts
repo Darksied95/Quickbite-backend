@@ -22,7 +22,7 @@ export class RestaurantRepository {
     async findAllActiveByOwner(ownerId: string) {
         return this
             .db.query.restaurantProfiles
-            .findFirst({ where: and(eq(restaurantProfiles.owner_id, ownerId), this.activeRestaurants()) })
+            .findMany({ where: and(eq(restaurantProfiles.owner_id, ownerId), this.activeRestaurants()) })
     }
 
     async delete(id: string) {

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { DRIZZLE, DrizzleDb } from "src/database/drizzle.module";
 import { orders } from "../schemas/orders.schema";
 import { eq, sql } from "drizzle-orm";
@@ -8,6 +8,7 @@ import { AddressService } from "../../addresses/addresses.service";
 import { orderItems, menuItems as menuItemsSchema } from "src/database/drizzle.schema";
 import { OrderValidator } from "./order-validator.service";
 import { OrderFactory } from "./order-factory.service";
+import { IOrderStatus } from "../order.constant";
 
 @Injectable()
 export class OrderService {
@@ -64,5 +65,37 @@ export class OrderService {
 
     async getAllForCustomer(customer_id: string) {
         return this.db.select().from(orders).where(eq(orders.customer_id, customer_id));
+    }
+
+    async acceptOrder(order_id: string) {
+        return this.transitionOrderStatus(order_id, ['pending'], 'accepted')
+    }
+
+    async readyForPickup(order_id: string) {
+        return this.transitionOrderStatus(order_id, ['accepted'], 'ready_for_pickup')
+    }
+
+    async rejectOrder(order_id: string) {
+        return this.transitionOrderStatus(order_id, ['pending', 'accepted', 'ready_for_pickup'], 'restaurant_rejected')
+    }
+
+    private transitionOrderStatus(order_id: string, fromStatus: IOrderStatus[], toStatus: IOrderStatus, errorMessage?: string) {
+        return this.db.transaction(async (trx) => {
+            const [order] = await trx
+                .select()
+                .from(orders)
+                .where(eq(orders.id, order_id))
+                .for('update')
+
+            if (!order) throw new NotFoundException('Order not found');
+
+            if (!fromStatus.includes(order.status)) {
+                throw new BadRequestException(errorMessage ?? `Cannot transition order with status: ${order.status} to ${toStatus}`);
+            }
+
+            const [updated] = await trx.update(orders).set({ status: toStatus }).where(eq(orders.id, order_id)).returning()
+
+            return updated
+        })
     }
 }

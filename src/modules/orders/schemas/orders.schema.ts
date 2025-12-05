@@ -4,7 +4,7 @@ import { users } from '../../users/users.schema';
 import { addresses } from '../../addresses/addresses.schema';
 import { ORDER_STATUS } from '../order.constant';
 
-export const orderStatusEnum = pgEnum('order_status', ORDER_STATUS as [string, ...string[]]);
+export const orderStatusEnum = pgEnum('order_status', ORDER_STATUS);
 
 export const orders = pgTable('orders', {
     id: uuid('id').primaryKey().defaultRandom(),

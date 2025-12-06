@@ -10,8 +10,9 @@ export * from "../modules/restaurants/schemas/menu_items.schema";
 export * from "../modules/drivers/schemas/driver_locations.schema";
 export * from "../modules/orders/schemas/orders.schema";
 export * from "../modules/orders/schemas/order_items.schema";
-export * from "../modules/deliveries/delivery_tracking.schema";
+export * from "../modules/deliveries/schemas/delivery_tracking.schema";
 export * from "../modules/payments/payments.schema";
 export * from "../modules/driver-transactions/driver_transactions.schema"
 export * from "../modules/reviews/reviews.schema";
 export * from "../modules/notifications/notifications.schema";
+export * from "../modules/deliveries/schemas/driver_assignments.schema"

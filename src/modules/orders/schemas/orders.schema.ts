@@ -9,7 +9,6 @@ export const orderStatusEnum = pgEnum('order_status', ORDER_STATUS);
 export const orders = pgTable('orders', {
     id: uuid('id').primaryKey().defaultRandom(),
     restaurant_id: uuid('restaurant_id').notNull().references(() => restaurantProfiles.id),
-    driver_id: uuid('driver_id').references(() => users.id),
     customer_id: uuid('customer_id').notNull().references(() => users.id),
     customer_address_id: uuid('customer_address_id').notNull().references(() => addresses.id),
     status: orderStatusEnum('status').notNull().default('pending'),
@@ -19,7 +18,6 @@ export const orders = pgTable('orders', {
     updated_at: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 }, (table) => [
     index('orders_restaurant_id_idx').on(table.restaurant_id),
-    index('orders_driver_id_idx').on(table.driver_id),
     index('orders_customer_id_idx').on(table.customer_id),
 ]);
 

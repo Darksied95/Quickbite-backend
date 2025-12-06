@@ -13,6 +13,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
 import { DrizzleModule } from './database/drizzle.module';
 import { OrderModule } from './modules/orders/order.module';
+import { DeliveryModule } from './modules/deliveries/delivery.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { OrderModule } from './modules/orders/order.module';
     RestaurantsModule,
     UserModule,
     AdminModule,
-    OrderModule
+    OrderModule,
+    DeliveryModule
   ],
   controllers: [AppController],
   providers: [

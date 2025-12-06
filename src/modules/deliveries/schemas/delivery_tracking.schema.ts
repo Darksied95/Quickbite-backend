@@ -1,6 +1,6 @@
 import { pgTable, uuid, decimal, timestamp, pgEnum, index } from 'drizzle-orm/pg-core';
-import { orders } from '../orders/schemas/orders.schema';
-import { DELIVERY_STATUS } from '../orders/order.constant';
+import { orders } from '../../orders/schemas/orders.schema';
+import { DELIVERY_STATUS } from '../../orders/order.constant';
 
 export const deliveryStatusEnum = pgEnum('delivery_status', DELIVERY_STATUS);
 

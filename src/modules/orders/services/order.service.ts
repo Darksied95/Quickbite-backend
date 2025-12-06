@@ -1,11 +1,11 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { DRIZZLE, DrizzleDb } from "src/database/drizzle.module";
 import { orders } from "../schemas/orders.schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, and } from "drizzle-orm";
 import { PinoLogger } from "nestjs-pino";
 import { CreateOrderDto } from "../dto/create-order.dto";
 import { AddressService } from "../../addresses/addresses.service";
-import { orderItems, menuItems as menuItemsSchema } from "src/database/drizzle.schema";
+import { orderItems, menuItems as menuItemsSchema, driverAssignments } from "src/database/drizzle.schema";
 import { OrderValidator } from "./order-validator.service";
 import { OrderFactory } from "./order-factory.service";
 import { IOrderStatus } from "../order.constant";
@@ -79,7 +79,33 @@ export class OrderService {
         return this.transitionOrderStatus(order_id, ['pending', 'accepted', 'ready_for_pickup'], 'restaurant_rejected')
     }
 
+    async unassignDriver(order_id: string, reason: string) {
+        return this.db.transaction(async trx => {
+            const [assignment] = await trx
+                .select()
+                .from(driverAssignments)
+                .where(and(
+                    eq(driverAssignments.order_id, order_id),
+                    eq(driverAssignments.status, "assigned")
+                ))
+
+            if (!assignment) {
+                throw new NotFoundException(`No active assignment found for this order`)
+            }
+
+            await trx
+                .update(driverAssignments)
+                .set({
+                    status: "unassigned",
+                    cancelled_at: new Date(),
+                    cancellation_reason: reason
+                })
+                .where(eq(driverAssignments.id, assignment.id))
+        })
+    }
+
     private transitionOrderStatus(order_id: string, fromStatus: IOrderStatus[], toStatus: IOrderStatus, errorMessage?: string) {
+
         return this.db.transaction(async (trx) => {
             const [order] = await trx
                 .select()

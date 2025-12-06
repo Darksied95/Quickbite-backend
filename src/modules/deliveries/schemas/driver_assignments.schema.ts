@@ -1,7 +1,7 @@
 import { pgTable, uuid, timestamp, varchar, pgEnum } from 'drizzle-orm/pg-core';
 import { orders } from 'src/database/drizzle.schema';
 import { users } from 'src/modules/users/users.schema';
-import { DRIVER_DELIVERY_STATUS_VALUE } from '../driver.constants';
+import { DRIVER_DELIVERY_STATUS_VALUE } from '../../drivers/driver.constants';
 
 export const driverAssignmentStatusEnum = pgEnum('driver_assignment_status', DRIVER_DELIVERY_STATUS_VALUE);
 

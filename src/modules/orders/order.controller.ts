@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Req, UseGuards } from "@nestjs/common";
 import { OrderService } from "./services/order.service";
 import { AuthGuard } from "../auth/auth.guard";
 import { RolesGuard } from "src/common/guards/roles.guard";
@@ -67,6 +67,20 @@ export class OrderController {
         @Param('orderId') orderId: string
     ) {
         return this.orderService.rejectOrder(orderId)
+    }
+
+    @Patch(':orderId/unassignDriver')
+    @Roles('restaurant_owner')
+    @UseGuards(OrderRestaurantOwnerGuard)
+    unassignDriver(
+        @Param('orderId') orderId: string,
+        @Body() body: { reason: string }
+    ) {
+
+        if (!body.reason || body.reason.length < 10) {
+            throw new BadRequestException('Reason must be at least 10 characters')
+        }
+        return this.orderService.unassignDriver(orderId, body.reason)
     }
 
 }

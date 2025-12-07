@@ -24,26 +24,23 @@ import { DriverModule } from '../drivers/driver.module';
       global: true,
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const secret = configService.get<string>('JWT_SECRET')
-        const expiresIn = configService.get<string>('JWT_EXPIRES_IN') as any
+        const secret = configService.get<string>('JWT_SECRET');
+        const expiresIn = configService.get<`${number}d` | `${number}m`>(
+          'JWT_EXPIRES_IN',
+        );
 
         if (!secret || !expiresIn) {
-          throw new Error('JWT environment variables are required')
+          throw new Error('JWT environment variables are required');
         }
 
         return {
           secret,
-          signOptions: { expiresIn }
-        }
-
-      }
-    })
+          signOptions: { expiresIn },
+        };
+      },
+    }),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    HashingService,
-    TokenService,
-  ],
+  providers: [AuthService, HashingService, TokenService],
 })
-export class AuthModule { }
+export class AuthModule {}

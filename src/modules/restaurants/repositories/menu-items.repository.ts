@@ -1,70 +1,78 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { DRIZZLE, DrizzleDb } from "src/database/drizzle.module";
-import { INewMenuItem, IUpdateMenuItem, menuItems } from "../schemas/menu_items.schema";
-import { eq, isNull, and, inArray } from "drizzle-orm";
+import { Inject, Injectable } from '@nestjs/common';
+import { DRIZZLE, DrizzleDb } from 'src/database/drizzle.module';
+import {
+  INewMenuItem,
+  IUpdateMenuItem,
+  menuItems,
+} from '../schemas/menu_items.schema';
+import { eq, isNull, and, inArray } from 'drizzle-orm';
 
 @Injectable()
 export class MenuItemsRepository {
-    constructor(@Inject(DRIZZLE) private readonly db: DrizzleDb) { }
+  constructor(@Inject(DRIZZLE) private readonly db: DrizzleDb) {}
 
-    // ============================================
-    // Private Helper - Active Menu Items
-    // ============================================
+  // ============================================
+  // Private Helper - Active Menu Items
+  // ============================================
 
-    private activeMenuItems() {
-        return isNull(menuItems.deleted_at)
+  private activeMenuItems() {
+    return isNull(menuItems.deleted_at);
+  }
+
+  async create(data: INewMenuItem[]) {
+    const [menuItem] = await this.db.insert(menuItems).values(data).returning();
+    return menuItem;
+  }
+
+  findAll(where: { restaurant_id: string; category_id?: string }) {
+    const conditions = [
+      eq(menuItems.restaurant_id, where.restaurant_id),
+      this.activeMenuItems(),
+    ];
+
+    if (where.category_id) {
+      conditions.push(eq(menuItems.category_id, where.category_id));
     }
 
-    async create(data: INewMenuItem[]) {
-        const [menuItem] = await this.db.insert(menuItems).values(data).returning()
-        return menuItem
-    }
+    return this.db.query.menuItems.findMany({
+      where: and(...conditions),
+    });
+  }
 
-    findAll(where: { restaurant_id: string, category_id?: string }) {
-        const conditions = [
-            eq(menuItems.restaurant_id, where.restaurant_id),
-            this.activeMenuItems()
-        ]
+  findById(id: string) {
+    return this.db.query.menuItems.findFirst({
+      where: and(eq(menuItems.id, id), this.activeMenuItems()),
+    });
+  }
 
-        if (where.category_id) {
-            conditions.push(eq(menuItems.category_id, where.category_id))
-        }
+  findByIds(ids: string[]) {
+    return this.db.query.menuItems.findMany({
+      where: and(inArray(menuItems.id, ids), this.activeMenuItems()),
+    });
+  }
 
-        return this.db.query.menuItems
-            .findMany({
-                where: and(...conditions),
-            })
-    }
+  update(where: { id: string; restaurant_id: string; data: IUpdateMenuItem }) {
+    return this.db
+      .update(menuItems)
+      .set(where.data)
+      .where(
+        and(
+          eq(menuItems.id, where.id),
+          eq(menuItems.restaurant_id, where.restaurant_id),
+        ),
+      );
+  }
 
-    findById(id: string) {
-        return this.db.query
-            .menuItems
-            .findFirst({ where: and(eq(menuItems.id, id), this.activeMenuItems()) })
-    }
-
-    findByIds(ids: string[]) {
-        return this.db.query.menuItems.findMany({
-            where: and(inArray(menuItems.id, ids), this.activeMenuItems())
-        })
-
-    }
-
-    update(where: { id: string, restaurant_id: string, data: IUpdateMenuItem }) {
-        return this.db.update(menuItems)
-            .set(where.data)
-            .where(and(
-                eq(menuItems.id, where.id),
-                eq(menuItems.restaurant_id, where.restaurant_id)
-            ))
-    }
-
-    delete(where: { id: string, restaurant_id: string }) {
-        return this.db.update(menuItems)
-            .set({ deleted_at: new Date() })
-            .where(and(
-                eq(menuItems.id, where.id),
-                eq(menuItems.restaurant_id, where.restaurant_id),
-                this.activeMenuItems()
-            ))
-    }
+  delete(where: { id: string; restaurant_id: string }) {
+    return this.db
+      .update(menuItems)
+      .set({ deleted_at: new Date() })
+      .where(
+        and(
+          eq(menuItems.id, where.id),
+          eq(menuItems.restaurant_id, where.restaurant_id),
+          this.activeMenuItems(),
+        ),
+      );
+  }
 }

@@ -4,15 +4,15 @@ import * as schema from '../drizzle.schema';
 import { randomUUID } from 'node:crypto';
 
 export async function seedCustomerProfiles(db: NodePgDatabase<typeof schema>) {
-    const users = await db
-        .select({ id: schema.users.id })
-        .from(schema.users)
-        .where(eq(schema.users.role, "customer"));
+  const users = await db
+    .select({ id: schema.users.id })
+    .from(schema.users)
+    .where(eq(schema.users.role, 'customer'));
 
-    const customers = users.map(user => ({
-        id: randomUUID(),
-        user_id: user.id,
-    }));
+  const customers = users.map((user) => ({
+    id: randomUUID(),
+    user_id: user.id,
+  }));
 
-    await db.insert(schema.customerProfiles).values(customers);
+  await db.insert(schema.customerProfiles).values(customers);
 }

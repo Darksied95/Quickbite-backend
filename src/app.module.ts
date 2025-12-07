@@ -28,15 +28,15 @@ import { DeliveryModule } from './modules/deliveries/delivery.module';
     UserModule,
     AdminModule,
     OrderModule,
-    DeliveryModule
+    DeliveryModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_FILTER,
-      useClass: DomainExceptionFilter
-    }
+      useClass: DomainExceptionFilter,
+    },
   ],
 })
-export class AppModule { }
+export class AppModule {}

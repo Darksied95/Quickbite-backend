@@ -1,14 +1,14 @@
-import { PartialType } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { PartialType } from '@nestjs/swagger';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class MenuCategoryDTO {
-    @IsString()
-    @IsNotEmpty()
-    name: string
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-    @IsBoolean()
-    @IsOptional()
-    is_active?: boolean = true
+  @IsBoolean()
+  @IsOptional()
+  is_active?: boolean = true;
 }
 
-export class UpdateMenuCategoryDTO extends PartialType(MenuCategoryDTO) { }
+export class UpdateMenuCategoryDTO extends PartialType(MenuCategoryDTO) {}

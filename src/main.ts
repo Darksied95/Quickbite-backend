@@ -6,10 +6,8 @@ import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    bufferLogs: true
+    bufferLogs: true,
   });
-
-
 
   const config = new DocumentBuilder()
     .setTitle('QuickBite API')
@@ -22,7 +20,6 @@ async function bootstrap() {
 
   SwaggerModule.setup('api/docs', app, document);
 
-
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -31,7 +28,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useLogger(app.get(Logger))
+  app.useLogger(app.get(Logger));
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

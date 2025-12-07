@@ -5,29 +5,30 @@ import { Restaurant_APPROVAL_STATES } from '../../modules/restaurants/restaurant
 import { eq } from 'drizzle-orm';
 
 export async function seedRestaurants(db: NodePgDatabase<typeof schema>) {
-    const { faker } = await import('@faker-js/faker');
+  const { faker } = await import('@faker-js/faker');
 
-    const restaurantOwners = await db
-        .select({ id: schema.users.id })
-        .from(schema.users)
-        .where(eq(schema.users.role, "restaurant_owner"));
+  const restaurantOwners = await db
+    .select({ id: schema.users.id })
+    .from(schema.users)
+    .where(eq(schema.users.role, 'restaurant_owner'));
 
-    if (restaurantOwners.length === 0) {
-        console.log('⚠️ No restaurant owners found. Skipping restaurant seeding.');
-        return;
-    }
+  if (restaurantOwners.length === 0) {
+    console.log('⚠️ No restaurant owners found. Skipping restaurant seeding.');
+    return;
+  }
 
-    const restaurants = Array.from({ length: 10 }, () => ({
-        id: randomUUID(),
-        name: faker.company.name(),
-        owner_id: restaurantOwners[Math.floor(Math.random() * restaurantOwners.length)].id,
-        phone: '+2347012345669',
-        email: faker.internet.email(),
-        description: faker.lorem.sentence(),
-        logo_url: faker.image.food(),
-        is_active: Math.random() > 0.5,
-        status: Restaurant_APPROVAL_STATES.Approved,
-    }));
+  const restaurants = Array.from({ length: 10 }, () => ({
+    id: randomUUID(),
+    name: faker.company.name(),
+    owner_id:
+      restaurantOwners[Math.floor(Math.random() * restaurantOwners.length)].id,
+    phone: '+2347012345669',
+    email: faker.internet.email(),
+    description: faker.lorem.sentence(),
+    logo_url: faker.image.food(),
+    is_active: Math.random() > 0.5,
+    status: Restaurant_APPROVAL_STATES.Approved,
+  }));
 
-    await db.insert(schema.restaurantProfiles).values(restaurants);
+  await db.insert(schema.restaurantProfiles).values(restaurants);
 }

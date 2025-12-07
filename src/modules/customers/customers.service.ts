@@ -5,7 +5,7 @@ import { INewCustomer } from './customers.schema';
 
 @Injectable()
 export class CustomersService {
-  constructor(private readonly customerRepository: CustomerRepository) { }
+  constructor(private readonly customerRepository: CustomerRepository) {}
 
   async create(customerData: INewCustomer, trx: DrizzleTransaction) {
     const user = await this.customerRepository.create(customerData, trx);

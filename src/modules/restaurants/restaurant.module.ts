@@ -20,7 +20,7 @@ import { RestaurantOwnerGuard } from './restaurant-owner.guard';
     MenuCategoriesRepository,
     MenuItemService,
     MenuItemsRepository,
-    RestaurantOwnerGuard
+    RestaurantOwnerGuard,
   ],
   controllers: [
     RestaurantsController,
@@ -31,7 +31,7 @@ import { RestaurantOwnerGuard } from './restaurant-owner.guard';
     RestaurantsService,
     RestaurantOwnerGuard,
     RestaurantRepository,
-    MenuItemService
-  ]
+    MenuItemService,
+  ],
 })
-export class RestaurantsModule { }
+export class RestaurantsModule {}

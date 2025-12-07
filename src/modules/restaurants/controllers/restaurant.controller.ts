@@ -1,6 +1,21 @@
-import { Controller, Post, UseGuards, Delete, Get, Body, Param, ParseUUIDPipe, Patch, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Delete,
+  Get,
+  Body,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { RestaurantsService } from '../services/restaurant.service';
-import { CreateRestaurantDto, UpdateRestaurantDto } from '../dtos/create-restaurant.dto';
+import {
+  CreateRestaurantDto,
+  UpdateRestaurantDto,
+} from '../dtos/create-restaurant.dto';
 import { AuthGuard } from '../../auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -11,50 +26,39 @@ import { RestaurantOwnerGuard } from '../restaurant-owner.guard';
 @Controller('restaurants')
 @UseGuards(AuthGuard)
 export class RestaurantsController {
-
-  constructor(
-    private readonly restaurantsService: RestaurantsService,
-  ) { }
+  constructor(private readonly restaurantsService: RestaurantsService) {}
 
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles("admin", "restaurant_owner")
-  create(
-    @Body() data: CreateRestaurantDto,
-    @CurrentUser() user: JWTPayload,
-  ) {
+  @Roles('admin', 'restaurant_owner')
+  create(@Body() data: CreateRestaurantDto, @CurrentUser() user: JWTPayload) {
     return this.restaurantsService.create({ ...data, owner_id: user.userId });
   }
 
   @Get()
   getAll() {
-    return this.restaurantsService.getAll()
+    return this.restaurantsService.getAll();
   }
 
-  @Get(":id")
-  findById(
-    @Param("id", ParseUUIDPipe) id: string
-  ) {
-    return this.restaurantsService.findById(id)
+  @Get(':id')
+  findById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.restaurantsService.findById(id);
   }
 
-  @Patch(":id")
+  @Patch(':id')
   @UseGuards(RestaurantOwnerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   update(
-    @Param("id", ParseUUIDPipe) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() data: UpdateRestaurantDto,
   ) {
-    return this.restaurantsService.update(id, data)
+    return this.restaurantsService.update(id, data);
   }
 
-  @Delete(":id")
+  @Delete(':id')
   @UseGuards(RestaurantOwnerGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(
-    @Param("id", ParseUUIDPipe) id: string,
-  ) {
-    return this.restaurantsService.delete(id)
+  delete(@Param('id', ParseUUIDPipe) id: string) {
+    return this.restaurantsService.delete(id);
   }
-
 }

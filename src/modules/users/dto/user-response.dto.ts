@@ -25,5 +25,5 @@ export class UserResponseDto implements Omit<CreateUserDTO, 'password'> {
   updated_at: Date;
 
   @Expose()
-  role: USER_ROLES
+  role: USER_ROLES;
 }

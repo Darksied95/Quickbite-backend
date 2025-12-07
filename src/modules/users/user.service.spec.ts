@@ -1,92 +1,87 @@
-import { Test, TestingModule } from "@nestjs/testing"
-import { UserService } from "./users.service"
-import { DRIZZLE } from "src/database/drizzle.module"
-import { UserNotFoundException } from "../../exceptions/user-not-found.exception"
-import { CreateUserDTO } from "./dto/create-user.dto"
-import { ConflictException } from "@nestjs/common"
+import { Test, TestingModule } from '@nestjs/testing';
+import { UserService } from './users.service';
+import { DRIZZLE } from 'src/database/drizzle.module';
+import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { ConflictException } from '@nestjs/common';
 
 describe('UserService', () => {
-    let service: UserService
-    let mockDb: any
-    let mockUser: CreateUserDTO
+  let service: UserService;
+  let mockDb: any;
+  let mockUser: CreateUserDTO;
 
-    beforeEach(async () => {
+  beforeEach(async () => {
+    mockUser = {
+      email: 'test@gmail.com',
+      first_name: 'Test',
+      last_name: 'User',
+      password: 'password',
+      role: 'customer' as const,
+      phone: '+234701232132',
+    };
 
+    mockDb = {
+      query: {
+        users: {
+          findFirst: jest.fn(),
+        },
+      },
+      select: jest.fn(),
+      insert: jest.fn().mockReturnValue({
+        values: jest.fn().mockReturnValue({
+          returning: jest.fn(),
+        }),
+      }),
+    };
 
-        mockUser = {
-            email: "test@gmail.com",
-            first_name: "Test",
-            last_name: 'User',
-            password: 'password',
-            role: 'customer' as const,
-            phone: '+234701232132'
-        };
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        UserService,
+        {
+          provide: DRIZZLE,
+          useValue: mockDb,
+        },
+      ],
+    }).compile();
 
-        mockDb = {
-            query: {
-                users: {
-                    findFirst: jest.fn()
-                }
-            },
-            select: jest.fn(),
-            insert: jest.fn().mockReturnValue({
-                values: jest.fn().mockReturnValue({
-                    returning: jest.fn()
-                })
-            })
-        };
+    service = module.get<UserService>(UserService);
+  });
 
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                UserService,
-                {
-                    provide: DRIZZLE,
-                    useValue: mockDb
-                }
-            ]
-        }).compile()
+  describe('getUserWithEmail', () => {
+    it('should return user when found', async () => {
+      mockDb.query.users.findFirst.mockResolvedValue(mockUser);
 
-        service = module.get<UserService>(UserService)
-    })
+      const result = await service.getUserWithEmail('test@gmail.com');
 
-    describe('getUserWithEmail', () => {
-        it('should return user when found', async () => {
+      expect(result).toEqual(mockUser);
+      expect(mockDb.query.users.findFirst).toHaveBeenCalledTimes(1);
+    });
 
-            mockDb.query.users.findFirst.mockResolvedValue(mockUser);
+    it('should throw UserNotFoundException when user not found', async () => {
+      mockDb.query.users.findFirst.mockResolvedValue(undefined);
 
-            const result = await service.getUserWithEmail('test@gmail.com')
+      await expect(
+        service.getUserWithEmail('notfound@example.com'),
+      ).rejects.toThrow(UserNotFoundException);
+    });
+  });
 
-            expect(result).toEqual(mockUser)
-            expect(mockDb.query.users.findFirst).toHaveBeenCalledTimes(1)
-        });
+  describe('create', () => {
+    it('should return a user', async () => {
+      mockDb.query.users.findFirst.mockResolvedValue(undefined);
+      mockDb.insert().values().returning.mockResolvedValue([mockUser]);
 
-        it('should throw UserNotFoundException when user not found', async () => {
-            mockDb.query.users.findFirst.mockResolvedValue(undefined);
+      const result = await service.create(mockUser, mockDb);
+      expect(result).toEqual(mockUser);
+      expect(mockDb.query.users.findFirst).toHaveBeenCalledTimes(1);
+      expect(mockDb.insert).toHaveBeenCalledTimes(1);
+    });
 
-            await expect(
-                service.getUserWithEmail('notfound@example.com')
-            ).rejects.toThrow(UserNotFoundException)
-        })
-    })
+    it('should throw ConflictException if email already exists', async () => {
+      mockDb.query.users.findFirst.mockResolvedValue(mockUser);
+      const result = service.create(mockUser, mockDb);
 
-    describe('create', () => {
-        it('should return a user', async () => {
-
-            mockDb.query.users.findFirst.mockResolvedValue(undefined)
-            mockDb.insert().values().returning.mockResolvedValue([mockUser])
-
-            const result = await service.create(mockUser, mockDb)
-            expect(result).toEqual(mockUser)
-            expect(mockDb.query.users.findFirst).toHaveBeenCalledTimes(1)
-            expect(mockDb.insert).toHaveBeenCalledTimes(1)
-
-        })
-
-        it('should throw ConflictException if email already exists', async () => {
-            mockDb.query.users.findFirst.mockResolvedValue(mockUser)
-            const result = service.create(mockUser, mockDb)
-
-            await expect(result).rejects.toThrow(ConflictException)
-        })
-    })
-})
+      await expect(result).rejects.toThrow(ConflictException);
+    });
+  });
+});

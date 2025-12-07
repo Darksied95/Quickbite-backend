@@ -1,12 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEmail, IsEnum, IsPhoneNumber, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsPhoneNumber,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { USER_ROLES, USER_ROLES_VALUES } from '../user.constant';
 
 export class CreateUserDTO {
   @ApiProperty({ example: 'email@quickbite.com' })
   @IsEmail()
-  @Transform(({ value }) => value.toLowerCase().trim())
+  @Transform(({ value }: { value: string }) => value.toLowerCase().trim())
   email: string;
 
   @ApiProperty()
@@ -29,5 +35,5 @@ export class CreateUserDTO {
   last_name: string;
 
   @IsEnum(USER_ROLES_VALUES)
-  role: USER_ROLES
+  role: USER_ROLES;
 }

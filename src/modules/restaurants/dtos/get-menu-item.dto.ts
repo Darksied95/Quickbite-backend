@@ -1,7 +1,7 @@
-import { IsOptional, IsUUID } from "class-validator";
+import { IsOptional, IsUUID } from 'class-validator';
 
 export class GetMenuItem {
-    @IsUUID()
-    @IsOptional()
-    category_id?: string
+  @IsUUID()
+  @IsOptional()
+  category_id?: string;
 }

@@ -13,13 +13,13 @@ import { sql } from 'drizzle-orm';
 import 'dotenv/config';
 
 async function seed() {
-    const pool = new Pool({
-        connectionString: process.env.DB_URL,
-    });
+  const pool = new Pool({
+    connectionString: process.env.DB_URL,
+  });
 
-    const db = drizzle(pool, { schema });
+  const db = drizzle(pool, { schema });
 
-    await db.execute(sql`
+  await db.execute(sql`
     TRUNCATE TABLE
      menu_items,
      menu_categories,
@@ -32,23 +32,23 @@ async function seed() {
         RESTART IDENTITY CASCADE
 `);
 
-    console.log('✅ Database cleared');
+  console.log('✅ Database cleared');
 
-    // Run seeders
-    await seedUsers(db);
-    await seedAddresses(db);
-    await seedCustomerProfiles(db);
-    await seedAdminProfiles(db);
-    await seedRestaurants(db);
-    await seedDrivers(db);
-    await seedMenuCategories(db);
-    await seedMenuItems(db);
+  // Run seeders
+  await seedUsers(db);
+  await seedAddresses(db);
+  await seedCustomerProfiles(db);
+  await seedAdminProfiles(db);
+  await seedRestaurants(db);
+  await seedDrivers(db);
+  await seedMenuCategories(db);
+  await seedMenuItems(db);
 
-    await pool.end();
-    console.log('✅ Seeding complete');
+  await pool.end();
+  console.log('✅ Seeding complete');
 }
 
 seed().catch((error) => {
-    console.error('❌ Seeding failed:', error);
-    process.exit(1);
+  console.error('❌ Seeding failed:', error);
+  process.exit(1);
 });

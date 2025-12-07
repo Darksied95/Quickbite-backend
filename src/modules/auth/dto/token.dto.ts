@@ -1,9 +1,9 @@
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
 
 export class TokenDTO {
-    @Expose()
-    access: string
+  @Expose()
+  access: string;
 
-    @Expose()
-    refresh: string
+  @Expose()
+  refresh: string;
 }

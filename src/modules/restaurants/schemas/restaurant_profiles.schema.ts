@@ -7,6 +7,8 @@ import {
   boolean,
   pgEnum,
   index,
+  integer,
+  decimal
 } from 'drizzle-orm/pg-core';
 import { users } from '../../users/users.schema';
 import { Restaurant_APPROVAL_STATES } from '../restaurant.constant';
@@ -28,6 +30,8 @@ export const restaurantProfiles = pgTable(
     email: varchar('email'),
     description: text('description'),
     logo_url: varchar('logo_url'),
+    total_reviews: integer('total_reviews').notNull().default(0),
+    average_rating: decimal('average_rating', { precision: 3, scale: 2 }),
     deleted_at: timestamp('deleted_at', { withTimezone: true }),
     is_active: boolean('is_active').notNull().default(true),
     status: restaurantStatusEnum('status')

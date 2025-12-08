@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { DriverRepository } from './driver.repository';
 import { ICreateDriver } from './driver.interface';
-import { UpdateDriverDTO } from './dto/update-driver.dto';
 import { DrizzleTransaction } from 'src/database/drizzle.module';
+import { IUpdateDriver } from './schemas/driver_profiles.schema';
 
 @Injectable()
 export class DriverService {
-  constructor(private readonly DriverRepo: DriverRepository) {}
+  constructor(private readonly DriverRepo: DriverRepository) { }
 
   create(data: ICreateDriver, trx: DrizzleTransaction) {
     return this.DriverRepo.create(data, trx);
@@ -24,7 +24,7 @@ export class DriverService {
     return this.DriverRepo.findByUserId(user_id);
   }
 
-  update(driverId: string, data: UpdateDriverDTO) {
+  update(driverId: string, data: IUpdateDriver) {
     return this.DriverRepo.update(driverId, data);
   }
 }

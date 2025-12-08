@@ -14,6 +14,7 @@ import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
 import { DrizzleModule } from './database/drizzle.module';
 import { OrderModule } from './modules/orders/order.module';
 import { DeliveryModule } from './modules/deliveries/delivery.module';
+import { ReviewModule } from './modules/reviews/reviews.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { DeliveryModule } from './modules/deliveries/delivery.module';
     AdminModule,
     OrderModule,
     DeliveryModule,
+    ReviewModule
   ],
   controllers: [AppController],
   providers: [
@@ -39,4 +41,4 @@ import { DeliveryModule } from './modules/deliveries/delivery.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

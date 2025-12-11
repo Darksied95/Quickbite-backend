@@ -1,23 +1,42 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { LoggerModule } from 'nestjs-pino';
 import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/users/users.module';
+import { DrizzleModule } from './database/drizzle.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { REDIS_CLIENT, RedisModule } from './modules/redis/redis.module';
+import { OrderModule } from './modules/orders/order.module';
+import { loggerConfig } from './common/config/logger.config';
+import { ReviewModule } from './modules/reviews/reviews.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { DeliveryModule } from './modules/deliveries/delivery.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { RestaurantsModule } from './modules/restaurants/restaurant.module';
-import { UserModule } from './modules/users/users.module';
-import { ConfigModule } from '@nestjs/config';
-import { AdminModule } from './modules/admin/admin.module';
-import { LoggerModule } from 'nestjs-pino';
-import { loggerConfig } from './common/config/logger.config';
-import { APP_FILTER } from '@nestjs/core';
 import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
-import { DrizzleModule } from './database/drizzle.module';
-import { OrderModule } from './modules/orders/order.module';
-import { DeliveryModule } from './modules/deliveries/delivery.module';
-import { ReviewModule } from './modules/reviews/reviews.module';
+import { ThrottlerRedisStorage } from './modules/redis/throttler-redis.storage';
+import { UserThrottlerGuard } from './modules/redis/guard/user-throttler.guard';
+import Redis from 'ioredis';
 
 @Module({
   imports: [
+    RedisModule,
+    ThrottlerModule.forRootAsync({
+      useFactory: (redisClient: Redis) => ({
+        throttlers: [
+          {
+            name: "default",
+            ttl: 60_000,
+            limit: 100,
+          }
+        ],
+        storage: new ThrottlerRedisStorage(redisClient),
+      }),
+      inject: [REDIS_CLIENT]
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -39,6 +58,10 @@ import { ReviewModule } from './modules/reviews/reviews.module';
       provide: APP_FILTER,
       useClass: DomainExceptionFilter,
     },
+    {
+      provide: APP_GUARD,
+      useClass: UserThrottlerGuard
+    }
   ],
 })
 export class AppModule { }

@@ -25,11 +25,13 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
     command: [ "redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}" ]
     networks:
       - quickbite_network
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -37,7 +39,7 @@ services:
   app:
     build:
       context: .
-      target: production
+      target: ${BUILD_TARGET:-production}
     container_name: quickbite_app
     restart: unless-stopped
     ports:
@@ -46,7 +48,7 @@ services:
       - .env
     environment:
       DB_STRING: postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
-      NODE_ENV: production
+      NODE_ENV: ${NODE_ENV:-production}
       PORT: 3000
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -58,6 +60,13 @@ services:
         condition: service_healthy
     networks:
       - quickbite_network
+    develop:
+      watch:
+        - action: sync
+          path: ./secrets
+          target: /app/sec
+        - action: rebuild
+          path: package.json
 
 volumes:
   postgres_data:

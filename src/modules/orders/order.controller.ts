@@ -7,7 +7,6 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { OrderService } from './services/order.service';
@@ -19,12 +18,14 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderRestaurantOwnerGuard } from './order-restaurant-owner.guard';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { JWTPayload } from '../auth/token/token.type';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('orders')
 @UseGuards(AuthGuard, RolesGuard)
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
 
+  @Throttle({ default: { limit: 10, ttl: 3_600_000 } })
   @Post()
   @Roles('customer')
   async create(@Body() body: CreateOrderDto, @CurrentUser() user: JWTPayload) {

@@ -12,13 +12,12 @@ import { REDIS_CLIENT, RedisModule } from './modules/redis/redis.module';
 import { OrderModule } from './modules/orders/order.module';
 import { loggerConfig } from './common/config/logger.config';
 import { ReviewModule } from './modules/reviews/reviews.module';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { hours, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { DeliveryModule } from './modules/deliveries/delivery.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { RestaurantsModule } from './modules/restaurants/restaurant.module';
 import { DomainExceptionFilter } from './exceptions/domain-exception.filter';
-import { ThrottlerRedisStorage } from './modules/redis/throttler-redis.storage';
-import { UserThrottlerGuard } from './modules/redis/guard/user-throttler.guard';
+import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import Redis from 'ioredis';
 
 @Module({
@@ -26,14 +25,8 @@ import Redis from 'ioredis';
     RedisModule,
     ThrottlerModule.forRootAsync({
       useFactory: (redisClient: Redis) => ({
-        throttlers: [
-          {
-            name: "default",
-            ttl: 60_000,
-            limit: 100,
-          }
-        ],
-        storage: new ThrottlerRedisStorage(redisClient),
+        throttlers: [{ name: 'default', limit: 5, ttl: hours(1) }],
+        storage: new ThrottlerStorageRedisService(redisClient),
       }),
       inject: [REDIS_CLIENT]
     }),
@@ -60,7 +53,7 @@ import Redis from 'ioredis';
     },
     {
       provide: APP_GUARD,
-      useClass: UserThrottlerGuard
+      useClass: ThrottlerGuard
     }
   ],
 })

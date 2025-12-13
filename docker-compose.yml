@@ -63,6 +63,9 @@ services:
     develop:
       watch:
         - action: sync
+          path: ./src
+          target: /app/src
+        - action: sync
           path: ./secrets
           target: /app/sec
         - action: rebuild
@@ -70,6 +73,7 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
 
 
 networks:

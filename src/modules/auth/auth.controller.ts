@@ -10,20 +10,38 @@ import { AuthService } from './auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginRequestDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
-import { Throttle, hours } from '@nestjs/throttler';
 import { Response } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
-  @Throttle({ default: { limit: 3, ttl: hours(1) } })
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDetails: LoginRequestDTO) {
-    const result = await this.authService.login(loginDetails);
-    return result;
+  async login(
+    @Body() loginDetails: LoginRequestDTO,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { tokens, user } = await this.authService.login(loginDetails);
+
+    res.cookie('access_token', tokens.access, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+    });
+
+    res.cookie('refresh_token', tokens.refresh, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/auth/refresh',
+      maxAge: 60 * 60 * 24 * 30,
+    });
+
+    return user;
   }
 
   @Post('register')

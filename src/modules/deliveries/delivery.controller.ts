@@ -7,12 +7,10 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { DeliveryService } from './delivery.service';
-import { Request } from 'express';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { JWTPayload } from '../auth/token/token.type';
 

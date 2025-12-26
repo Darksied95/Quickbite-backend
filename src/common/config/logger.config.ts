@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Params } from 'nestjs-pino';
 
 export const loggerConfig: Params = {

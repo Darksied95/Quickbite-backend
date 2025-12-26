@@ -23,7 +23,7 @@ import { Throttle } from '@nestjs/throttler';
 @Controller('orders')
 @UseGuards(AuthGuard, RolesGuard)
 export class OrderController {
-  constructor(private readonly orderService: OrderService) { }
+  constructor(private readonly orderService: OrderService) {}
 
   @Throttle({ default: { limit: 10, ttl: 3_600_000 } })
   @Post()

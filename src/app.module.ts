@@ -28,7 +28,7 @@ import Redis from 'ioredis';
         throttlers: [{ name: 'default', limit: 5, ttl: hours(1) }],
         storage: new ThrottlerStorageRedisService(redisClient),
       }),
-      inject: [REDIS_CLIENT]
+      inject: [REDIS_CLIENT],
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -42,7 +42,7 @@ import Redis from 'ioredis';
     AdminModule,
     OrderModule,
     DeliveryModule,
-    ReviewModule
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [
@@ -53,8 +53,8 @@ import Redis from 'ioredis';
     },
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard
-    }
+      useClass: ThrottlerGuard,
+    },
   ],
 })
-export class AppModule { }
+export class AppModule {}

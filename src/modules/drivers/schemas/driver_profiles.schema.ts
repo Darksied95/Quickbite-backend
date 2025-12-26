@@ -43,7 +43,6 @@ export const driverProfiles = pgTable(
 
 export type ICreateDriver = typeof driverProfiles.$inferInsert;
 export type IDriver = typeof driverProfiles.$inferSelect;
-export type IUpdateDriver = Partial<Pick<
-  IDriver,
-  'vehicle_type' | 'status' | 'is_available'
->>;
+export type IUpdateDriver = Partial<
+  Pick<IDriver, 'vehicle_type' | 'status' | 'is_available'>
+>;

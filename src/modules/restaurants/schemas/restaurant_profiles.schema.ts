@@ -8,7 +8,7 @@ import {
   pgEnum,
   index,
   integer,
-  decimal
+  decimal,
 } from 'drizzle-orm/pg-core';
 import { users } from '../../users/users.schema';
 import { Restaurant_APPROVAL_STATES } from '../restaurant.constant';

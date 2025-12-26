@@ -7,7 +7,6 @@ import {
   timestamp,
   pgEnum,
   index,
-  real,
 } from 'drizzle-orm/pg-core';
 
 export const entityTypeEnum = pgEnum('entity_type', ['user', 'restaurant']);
@@ -23,9 +22,6 @@ export const addresses = pgTable(
     city: varchar('city').notNull(),
     state: varchar('state').notNull(),
     postal_code: varchar('postal_code').notNull(),
-    country: varchar('country').notNull(),
-    latitude: real('latitude').notNull(),
-    longitude: real('longitude').notNull(),
     is_default: boolean('is_default').notNull().default(false),
     label: varchar('label'),
     delivery_instructions: text('delivery_instructions'),
@@ -37,7 +33,6 @@ export const addresses = pgTable(
     ),
   },
   (table) => [
-    index('addresses_lat_lng_idx').on(table.latitude, table.longitude),
     index('addresses_entity_idx').on(table.entity_id, table.entity_type),
   ],
 );

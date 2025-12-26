@@ -6,7 +6,7 @@ import { IUpdateDriver } from './schemas/driver_profiles.schema';
 
 @Injectable()
 export class DriverService {
-  constructor(private readonly DriverRepo: DriverRepository) { }
+  constructor(private readonly DriverRepo: DriverRepository) {}
 
   create(data: ICreateDriver, trx: DrizzleTransaction) {
     return this.DriverRepo.create(data, trx);

@@ -1,13 +1,12 @@
-import { IsNumber, IsOptional, IsString, Max, Min, } from "class-validator";
+import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CreateReviewDto {
-    @IsNumber()
-    @Min(1)
-    @Max(5)
-    rating: number
+  @IsNumber()
+  @Min(1)
+  @Max(5)
+  rating: number;
 
-
-    @IsString()
-    @IsOptional()
-    comment?: string
+  @IsString()
+  @IsOptional()
+  comment?: string;
 }

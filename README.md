@@ -1,99 +1,79 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Quick Bite Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**Quick Bite Backend** is a robust, production-ready API built with **NestJS**. This project serves as a technical deep-dive into scalable backend architecture, focusing on type-safe database management, secure authentication, and infrastructure orchestration.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🎯 Project Intent
+The primary goal of this repository is to master **NestJS** internals. It is designed to handle complex restaurant domains while maintaining high performance through Redis caching and Drizzle ORM.
 
-## Description
+## 🛠 Tech Stack
+* **Framework:** [NestJS](https://nestjs.com/)
+* **Database:** [PostgreSQL](https://www.postgresql.org/) (ACID compliant storage)
+* **ORM:** [Drizzle ORM](https://orm.drizzle.team/) (TypeScript-first, lightweight)
+* **Caching/Session:** [Redis](https://redis.io/)
+* **Logging:** [Pino](https://getpino.io/)
+* **Documentation:** [Swagger/OpenAPI](https://swagger.io/)
+* **Validation:** [class-validator](https://github.com/typestack/class-validator) & [ValidationPipe](https://docs.nestjs.com/techniques/validation)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏗 System Architecture
+The backend is structured as a modular monolith, allowing for clear domain boundaries while preparing for a future monorepo transition.
 
-## Project setup
 
-```bash
-$ npm install
-```
 
-## Compile and run the project
+### Key Modules:
+- **User & Auth:** Secure authentication using JWT (Bearer Tokens) with a planned migration to HttpOnly cookies.
+- **Restaurant & Menu:** Management of restaurant entities and hierarchical menu items.
+- **Drivers & Reviews:** Logistics management and user feedback systems.
+- **Orders:** Core business logic for processing restaurant transactions.
 
-```bash
-# development
-$ npm run start
+### Infrastructure Decisions:
+- **Drizzle ORM:** Chosen for its superior TypeScript integration and minimal runtime overhead compared to TypeORM.
+- **Redis Session Management:** Currently handles session storage; future iterations will include menu item caching to reduce DB load.
+- **Security:** Implemented `Throttler` for rate limiting, with aggressive limits on `/auth` and `/orders` to prevent abuse.
 
-# watch mode
-$ npm run start:dev
+## 🚀 Getting Started
 
-# production mode
-$ npm run start:prod
-```
+### Prerequisites
+- Docker & Docker Compose
+- pnpm
 
-## Run tests
+### Environment Setup
+Create a `.env` file in the root directory and populate it with the following:
 
-```bash
-# unit tests
-$ npm run test
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_NAME=quickbite
+DB_URL=postgres://your_user:your_password@localhost:5432/quickbite
 
-# e2e tests
-$ npm run test:e2e
+JWT_SECRET=your_secret_key
+JWT_EXPIRES_IN=1d
 
-# test coverage
-$ npm run test:cov
-```
+### Installation & Execution
+1. **Start Infrastructure:**
+   docker-compose up -d
 
-## Deployment
+2. **Install Dependencies:**
+   pnpm install
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+3. **Run Migrations:**
+   pnpm db:push
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+4. **Start Development Server:**
+   pnpm dev
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+## 🛠 Development Commands
+- `pnpm db:generate` - Generate Drizzle migrations.
+- `pnpm db:migrate` - Apply migrations to the database.
+- `pnpm db:studio` - Open Drizzle's GUI to explore data.
+- `pnpm db:seed` - Populate the database with dummy data.
+- `pnpm test` - Run unit tests with Jest.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🗺 Roadmap
+- [ ] **WebSockets:** Real-time order status and notification system.
+- [ ] **Cookie Auth:** Transition from Bearer tokens to secure HttpOnly cookies.
+- [ ] **Redis Caching:** Implement caching for frequently accessed menu data.
+- [ ] **Monorepo:** Merge with the Next.js frontend into a unified workspace.
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# Quickbite-backend
+---
+*Note: This is a hobby project focused on learning NestJS best practices.*
